@@ -17,8 +17,17 @@ class SearchPage extends Component{
 
   handleSubmit(event) {
     event.preventDefault();
-    alert(this.state.search);
     console.log('Submitted');
+    console.log(fetch('/austinCleanupAPI/allUsers').
+                then(response => console.log(response.json())));
+    console.log(fetch('/austinCleanupAPI/allUsers').
+                then(response => response.json()).
+                then(json => JSON.stringify(json)));
+    /*
+    fetch('localhost:8080/austinCleanupAPI/allUsers')
+    .then(response => response.json())
+    .then(json => alert(JSON.stringify(json)));
+    */
   }
 
   handleChange(event){
