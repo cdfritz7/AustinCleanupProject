@@ -1,0 +1,9 @@
+- create frontend skellington
+- make api calls with frontend
+
+- scure api calls
+- add in other security from https://spring.io/guides/gs/accessing-data-mysql/
+- docker container for frontend
+- docker container for database
+- docker container for API
+
