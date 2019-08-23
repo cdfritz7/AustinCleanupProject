@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 class EventPage extends Component {
   render(){
-    return <h1> test event page </h1>;
+    return <h1>Test Event Page</h1>;
   }
 }
 

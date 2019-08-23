@@ -1,9 +1,12 @@
 - create frontend skellington
 - make api calls with frontend
 
+- make API request that returns events close to a latitude/longitude
 - scure api calls
 - add in other security from https://spring.io/guides/gs/accessing-data-mysql/
 - docker container for frontend
 - docker container for database
 - docker container for API
 
+=========
+- When Deploying - Revisit the @CrossOrigin(origins = "http://localhost:3000") in the spring boot MainController.java

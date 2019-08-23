@@ -18,16 +18,15 @@ class SearchPage extends Component{
   handleSubmit(event) {
     event.preventDefault();
     console.log('Submitted');
-    console.log(fetch('/austinCleanupAPI/allUsers').
-                then(response => console.log(response.json())));
-    console.log(fetch('/austinCleanupAPI/allUsers').
-                then(response => response.json()).
-                then(json => JSON.stringify(json)));
-    /*
-    fetch('localhost:8080/austinCleanupAPI/allUsers')
-    .then(response => response.json())
-    .then(json => alert(JSON.stringify(json)));
-    */
+    fetch('http://localhost:8080/austinCleanupAPI/allUsers')
+                .then(function(response){
+                  if(response.ok){
+                    return response.json();
+                  }else{
+                    throw new Error('Network Response Not Okay');
+                  }
+                })
+                .then(json => alert(JSON.stringify(json)));
   }
 
   handleChange(event){

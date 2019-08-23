@@ -33,6 +33,7 @@ class Main extends Component{
         <Route exact path="/" component={SearchPage}/>
         <Route path="/MapPage" component={MapPage}/>
         <Route path="/Profile" component={ProfilePage}/>
+        <Route path="/MapPage/:latlong" component={MapPage}/>
 
       </BrowserRouter>
     )

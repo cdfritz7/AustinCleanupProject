@@ -1,4 +1,4 @@
-run mvn spring:boot-run to start the server
+run mvn spring-boot:run to start the server
 
 you must have your mysql setup to mesh with the
 ./src/main/resources/application.properties

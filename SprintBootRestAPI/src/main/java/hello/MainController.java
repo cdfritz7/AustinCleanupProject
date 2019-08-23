@@ -2,11 +2,7 @@ package hello;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -47,7 +43,8 @@ public class MainController {
 		userRepository.deleteById(Integer.parseInt(id));
 		return "User Deleted";
 	}
-	
+
+	@CrossOrigin(origins = "http://localhost:3000") //so we can make requests from react when in development revisit
 	@GetMapping(path="/allUsers")
 	public @ResponseBody Iterable<User> getAllUsers() {
 		// This returns a JSON or XML with the users
@@ -92,6 +89,7 @@ public class MainController {
 		return "Event Deleted";
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000") //so we can make requests from react when in development revisit
 	@GetMapping("/allEvents")
 	public @ResponseBody Iterable<Event> getAllEvents(){
 		return eventRepository.findAll();
