@@ -1,41 +1,56 @@
-import React, {Component} from 'react';
+ import React, {Component} from 'react';
 import {Form,
         Container,
         Row,
         Col,
         Card,
         Button} from 'react-bootstrap';
+import {Redirect} from 'react-router-dom';
 import './css/SearchPage.css';
 
 class SearchPage extends Component{
+  
   constructor(props){
     super(props);
-    this.state={search:''};
+    this.state={search:'',
+                latitude:'',
+                longitude:'',
+                toMapPage: false,
+                isValidSearchStr: false};
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  isLocationValid(searchStr){
+    //add something for geocoding
+    return true;
   }
 
   handleSubmit(event) {
     event.preventDefault();
     console.log('Submitted');
-    fetch('http://localhost:8080/austinCleanupAPI/allUsers')
-                .then(function(response){
-                  if(response.ok){
-                    return response.json();
-                  }else{
-                    throw new Error('Network Response Not Okay');
-                  }
-                })
-                .then(json => alert(JSON.stringify(json)));
+
+    //convert to latitude longitude
+    var latlng = this.state.search.split(" ");
+    var lat = latlng[0];
+    var lng = latlng[1];
+
+    this.setState({toMapPage:true, latitude:lat, longitude:lng});
   }
 
   handleChange(event){
-    this.setState({search:event.target.value})
+    this.setState({search:event.target.value});
+    if(this.isLocationValid(event.target.value)){
+      this.setState({isValidSearchStr:true});
+    }
   }
 
   render(){
+    if(this.state.toMapPage){
+      var redirectURL = `/MapPage/${this.state.latitude}_${this.state.longitude}`;
+      return <Redirect to={redirectURL}/>
+    }else{
     return (
-      (
         <div>
           <div className="bg">
             <img src={require("./imgs/bridge_background.jpeg")} className="bg_img"/>
@@ -44,7 +59,7 @@ class SearchPage extends Component{
               <Form onSubmit={this.handleSubmit}>
                 <Form.Group>
                   <Form.Control style={{width:'66vw', height:'6vh'}}
-                         placeholder="Search"
+                         placeholder="Type in latitude longitude"
                          onChange={this.handleChange}/>
                 </Form.Group>
                 <Button variant="primary" type="submit">
@@ -92,8 +107,9 @@ class SearchPage extends Component{
             </Row>
           </Container>
         </div>
-      )
+
     )
+  }
   }
 }
 

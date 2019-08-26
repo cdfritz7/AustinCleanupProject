@@ -12,29 +12,29 @@ class EventMarkerSmall extends Component {
   }
 
   render(){
-    return <h1> {this.props.event.name} </h1>
+    return <h3> {this.props.name} </h3>
   }
 }
 
 class SimpleMap extends Component {
-    static defaultProps = {
-      dcenter: {
-        lat:0.0,
-        lng:0.0
-      },
-      zoom: 11
-    };
-
-  constructor(props){
-    super(props);
-  }
+  static defaultProps = {
+    dcenter: {
+      lat:0.0,
+      lng:0.0
+    },
+    zoom: 10
+  };
 
   render() {
 
-    {console.log(this.props.center);}
+    //create list of markers based on passed in events
+    var marker_list = this.props.events.map(my_event => <EventMarkerSmall lat={my_event.latitude}
+                      lng={my_event.longitude}
+                      name={my_event.name} />);
+
     return (
       //always set container height explicitly, required by google maps
-      <div style={{height: '65vh', width: '100%'}}>
+      <div style={{height: '75vh', width: '100%'}}>
         <GoogleMapReact
           //we need to get a google maps api key to use full functionality
           //bootstrapURLKeys={{key:/*your key here8
@@ -42,7 +42,7 @@ class SimpleMap extends Component {
           defaultZoom={this.props.zoom}
           center={this.props.center}
         >
-
+          {marker_list}
         </GoogleMapReact>
       </div>
     );
@@ -69,31 +69,43 @@ class MapPage extends Component {
   //or when a search is performed
   //will be done by making an API call, right now just returns all events
   resetEvents(latitude, longitude){
-    console.log('reset');
-
-    fetch("http://localhost:8080/austinCleanupAPI/allEvents")
+    console.log(this.state.latitude);
+    console.log(this.state.longitude);
+    fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${latitude}&lng=${longitude}`)
     .then(function(response){
       if(response.ok){
-        console.log('reset1');
         return response.json();
       }else{
         throw new Error('Error in MapPage.js resetEvents, Network response not okay')
       }
-    }).then(json => this.setState({events:json}));
-    
+    }).then(json => {
+      this.setState({events:json})});
   }
 
   componentDidMount(){
-      const {handle} = this.props.match.params;
+      const handle = this.props.match.params.latlong;
+      var floatLat = 30.27;
+      var floatLng = -97.74
+
       if(handle){
           var latlong = handle.split("_")
-          this.setState({latitude:parseInt(latlong[0]), longitude:parseInt(latlong[1])});
-      }else{
-          this.setState({latitude:30.27, longitude:-97.74});
+          var floatLat = parseFloat(latlong[0]);
+          var floatLng = parseFloat(latlong[1]);
       }
-      this.resetEvents(this.state.latitude, this.state.longitude);
-  }
 
+      fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${floatLat}&lng=${floatLng}`)
+      .then(function(response){
+        if(response.ok){
+          return response.json();
+        }else{
+          throw new Error('Error in MapPage.js resetEvents, Network response not okay')
+        }
+      }).then(json => {
+        this.setState({events:json})
+      });
+
+      this.setState({latitude:floatLat, longitude:floatLng});
+  }
 
 
   render(){
@@ -107,17 +119,13 @@ class MapPage extends Component {
       <div>
         <Container className='centered'>
           <Row>
-            <Col xs={6}>
+            <Col xs={4}>
               <ListGroup>
                 {event_list}
-                <ListGroup.Item>asdf</ListGroup.Item>
-                <ListGroup.Item>asdf</ListGroup.Item>
-                <ListGroup.Item>asdf</ListGroup.Item>
-                <ListGroup.Item>asdf</ListGroup.Item>
               </ListGroup>
             </Col>
-            <Col xs={6}>
-              <SimpleMap center={{lat:this.state.latitude, lng:this.state.longitude}}/>
+            <Col xs={8}>
+              <SimpleMap center={{lat:this.state.latitude, lng:this.state.longitude}} events={this.state.events}/>
             </Col>
           </Row>
         </Container>

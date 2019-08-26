@@ -34,7 +34,8 @@ class Main extends Component{
         <Route path="/MapPage" component={MapPage}/>
         <Route path="/Profile" component={ProfilePage}/>
         <Route path="/MapPage/:latlong" component={MapPage}/>
-
+        <Route path="/testEventPage" component={EventPage} />
+        
       </BrowserRouter>
     )
   }
