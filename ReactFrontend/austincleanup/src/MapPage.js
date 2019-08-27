@@ -3,7 +3,11 @@ import GoogleMapReact from 'google-map-react';
 import {Container,
         Row,
         Col,
-        ListGroup} from 'react-bootstrap/';
+        ListGroup,
+        Modal,
+        Button} from 'react-bootstrap/';
+
+import EventPage from './EventPage.js';
 import './css/MapPage.css';
 
 class EventMarkerSmall extends Component {
@@ -53,6 +57,7 @@ class MapPage extends Component {
   static defaultProps = {
     latitude: 0.0,
     longitude: 0.0,
+    showAddEventModal: false,
     events:[]
   };
 
@@ -68,10 +73,8 @@ class MapPage extends Component {
   //called to reset our event list, used initially when component mounts
   //or when a search is performed
   //will be done by making an API call, right now just returns all events
-  resetEvents(latitude, longitude){
-    console.log(this.state.latitude);
-    console.log(this.state.longitude);
-    fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${latitude}&lng=${longitude}`)
+  resetEvents(){
+    fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${this.state.latitude}&lng=${this.state.longitude}`)
     .then(function(response){
       if(response.ok){
         return response.json();
@@ -125,7 +128,27 @@ class MapPage extends Component {
               </ListGroup>
             </Col>
             <Col xs={8}>
-              <SimpleMap center={{lat:this.state.latitude, lng:this.state.longitude}} events={this.state.events}/>
+              <SimpleMap center={{lat:this.state.latitude,
+                                  lng:this.state.longitude}}
+                         events={this.state.events}/>
+            </Col>
+          </Row>
+          <Row>
+            <Col xs={12}>
+              <Button variant="primary"
+                      onClick={()=>{this.setState({showAddEventModal:true})}}>
+                Add Event
+              </Button>
+              <Modal show={this.state.showAddEventModal}
+                     onHide={()=>{
+                                  this.setState({showAddEventModal:false});
+                                  this.resetEvents();
+                                  }}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Add Event</Modal.Title>
+                </Modal.Header>
+                <Modal.Body><EventPage /></Modal.Body>
+              </Modal>
             </Col>
           </Row>
         </Container>
