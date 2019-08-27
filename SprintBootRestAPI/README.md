@@ -9,3 +9,5 @@ the issue may be that your mysql is not using a time zone that
 spring-boot recognizes. try running the following in mysql
 
 SET GLOBAL time_zone = "+0:00"
+
+https://spring.io/guides/gs/accessing-data-mysql/
