@@ -13,7 +13,6 @@ import Nav from 'react-bootstrap/Nav';
 import SearchPage from "./SearchPage.js";
 import MapPage from "./MapPage.js";
 import ProfilePage from "./ProfilePage";
-import EventPage from "./EventPage";
 
 class Main extends Component{
   render(){
@@ -34,8 +33,7 @@ class Main extends Component{
         <Route path="/MapPage" component={MapPage}/>
         <Route path="/Profile" component={ProfilePage}/>
         <Route path="/MapPage/:latlong" component={MapPage}/>
-        <Route path="/testEventPage" component={EventPage} />
-        
+
       </BrowserRouter>
     )
   }

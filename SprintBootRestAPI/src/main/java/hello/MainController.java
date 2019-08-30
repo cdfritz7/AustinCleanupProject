@@ -58,6 +58,37 @@ public class MainController {
 		return userRepository.findById(Integer.parseInt(id));
 	}
 
+	@CrossOrigin(origins="http://localhost:3000")
+	@PostMapping(path="/checkIsUser")
+	public @ResponseBody String checkIsUser(@RequestBody String jsonStr) {
+
+		JSONObject jObject = new JSONObject(jsonStr);
+
+		String username = jObject.getString("username");
+		String password = jObject.getString("password");
+
+		System.out.println(username);
+
+		Iterable<User> user_list = userRepository.findAll();
+
+		for(User u: user_list){
+			//the username string could also be an email
+			if(u.getUsername().equals(username) || u.getEmail().equals(username)){
+				if(u.getPassword().equals(password)){
+					String myString = new JSONObject()
+         						.put("IsValid", "True").toString();
+					return myString;
+				}
+			}
+		}
+
+		System.out.println("False");
+
+		String myString = new JSONObject()
+							.put("IsValid", "False").toString();
+		return myString;
+	}
+
 
 	/*
 	------------------------------------------------------------
@@ -73,7 +104,6 @@ public class MainController {
 	public @ResponseBody String addEvent(@RequestBody String jsonStr){
 
 		JSONObject jObject = new JSONObject(jsonStr);
-		System.out.println(jObject);
 
 		Event n = new Event();
 		n.setName(jObject.getString("name"));

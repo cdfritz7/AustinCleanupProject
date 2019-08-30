@@ -7,7 +7,7 @@ import {Container,
         Modal,
         Button} from 'react-bootstrap/';
 
-import EventPage from './EventPage.js';
+import AddEventComponent from './AddEventComponent.js';
 import './css/MapPage.css';
 
 class EventMarkerSmall extends Component {
@@ -147,7 +147,7 @@ class MapPage extends Component {
                 <Modal.Header closeButton>
                   <Modal.Title>Add Event</Modal.Title>
                 </Modal.Header>
-                <Modal.Body><EventPage /></Modal.Body>
+                <Modal.Body><AddEventComponent /></Modal.Body>
               </Modal>
             </Col>
           </Row>

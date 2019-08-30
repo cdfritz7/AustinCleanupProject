@@ -5,9 +5,8 @@ import {Form,
         Col,
         Card,
         Button} from 'react-bootstrap';
-import {Redirect} from "react-router-dom";
 
-class EventPage extends Component {
+class AddEventComponent extends Component {
 
   constructor(props){
     super(props);
@@ -77,10 +76,7 @@ class EventPage extends Component {
   }
 
   render(){
-    if(this.state.refresh){
-      return <Redirect to="/testEventPage" />
-    }else{
-      return (
+    return (
         <div>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
@@ -109,8 +105,8 @@ class EventPage extends Component {
           </Form>
         </div>
       )
-    }
+
   }
 }
 
-export default EventPage;
+export default AddEventComponent;
