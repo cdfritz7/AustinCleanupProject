@@ -9,7 +9,7 @@ import {Redirect} from 'react-router-dom';
 import './css/SearchPage.css';
 
 class SearchPage extends Component{
-  
+
   constructor(props){
     super(props);
     this.state={search:'',

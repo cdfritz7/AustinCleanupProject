@@ -4,7 +4,9 @@ import {Form,
         Row,
         Col,
         Card,
-        Button} from 'react-bootstrap';
+        Button,
+        Modal} from 'react-bootstrap';
+import AddAccountComponent from './AddAccountComponent.js';
 
 class LoginComponent extends Component {
 
@@ -12,15 +14,7 @@ class LoginComponent extends Component {
     super(props);
 
     this.state = {
-      username:'',
-      password:''
-    }
-
-    let isLoggedOn = sessionStorage.getItem('isLoggedOn');
-    if(isLoggedOn == "True"){
-      this.setState({login_response:"True"})
-    }else{
-      this.setState({login_response:""})
+      showCreateAccountModal:false
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -30,71 +24,67 @@ class LoginComponent extends Component {
   }
 
   handleSubmit(event){
-    event.preventDefault();
-
-    console.log('Submitted');
-
-    fetch('http://localhost:8080/austinCleanupAPI/checkIsUser', {
-      method:"POST",
-      headers: {'Accept': 'application/json', 'Content-Type':'application/json'},
-      body: JSON.stringify({
-        'username': this.state.username,
-        'password': this.state.password
-      })
-    }).then(response => {
-      if(response.ok){
-        return response.json();
-      }else{
-        console.log('Network response not okay');
-      }
-    }).then(json => {
-      this.setState({'login_response':json.IsValid});
-    });
-
-    //depending on whether response is okay,
-    //set local storage boolean keeping track of login to true along with user id
+    this.props.onLoginSubmit(event);
   }
 
   handleUsernameChange(event){
-    this.setState({username:event.target.value});
+    this.props.handleUsernameChange(event.target.value);
   }
 
   handlePasswordChange(event){
-    this.setState({password:event.target.value});
+    this.props.handlePasswordChange(event.target.value);
   }
 
   //checks if user is logged on before rendering the component
+  /*
   componentDidMount(){
     let isLoggedOn = sessionStorage.getItem('isLoggedOn');
-    if(isLoggedOn == "True"){
+    if(isLoggedOn === "True"){
       this.setState({login_response:"True"})
     }
   }
+  */
 
   render(){
-    if(this.state.login_response == "False" || this.state.login_response == ""){
-      return (
+    console.log('login component rendered');
+
+    return (
         <div>
-          <Form onSubmit={this.handleSubmit}>
-            <Form.Group>
-              <Form.Label>Username</Form.Label>
-              <Form.Control value={this.state.username} onChange={this.handleUsernameChange}></Form.Control>
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Password</Form.Label>
-              <Form.Control value={this.state.password} onChange={this.handlePasswordChange}></Form.Control>
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Log in
-            </Button>
-          </Form>
+          <Container>
+            <Row>
+              <Col xs={12} >
+                <Form onSubmit={this.handleSubmit}>
+                  <Form.Group>
+                    <Form.Label>Username</Form.Label>
+                    <Form.Control value={this.props.username} onChange={this.handleUsernameChange}></Form.Control>
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Password</Form.Label>
+                    <Form.Control value={this.props.password} onChange={this.handlePasswordChange}></Form.Control>
+                  </Form.Group>
+                  <Button variant="primary" type="submit">
+                    Log in
+                  </Button>
+                </Form>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12}>
+                <Button variant="primary" onClick={() => {this.setState({showCreateAccountModal:true})}} >
+                Create New Account
+                </Button>
+                <Modal show={this.state.showCreateAccountModal}
+                       onHide={() => {this.setState({showCreateAccountModal:false})}}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>New Account</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body><AddAccountComponent /></Modal.Body>
+                </Modal>
+              </Col>
+            </Row>
+         </Container>
        </div>
-      )
-    }else{
-      sessionStorage.setItem('isLoggedOn', 'True');
-      console.log(sessionStorage.getItem('isLoggedOn'))
-      return (<h1> Logged In </h1>);
-    }
+    )
   }
 }
 

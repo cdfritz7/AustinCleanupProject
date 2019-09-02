@@ -10,6 +10,28 @@ import {Container,
 import AddEventComponent from './AddEventComponent.js';
 import './css/MapPage.css';
 
+class EventList extends Component {
+  render(){
+
+    var event_list = this.props.events.map(my_event =>
+    <ListGroup.Item key={my_event.id.toString()} eventKey={my_event.id.toString()}>
+    {my_event.name}
+    </ListGroup.Item>
+    )
+
+    console.log(this.props.events);
+    console.log(event_list);
+
+    return (
+      <div>
+        <ListGroup>
+          {event_list}
+        </ListGroup>
+      </div>
+    )
+  }
+}
+
 class EventMarkerSmall extends Component {
   constructor(props){
     super(props);
@@ -30,9 +52,10 @@ class SimpleMap extends Component {
   };
 
   render() {
-
     //create list of markers based on passed in events
-    var marker_list = this.props.events.map(my_event => <EventMarkerSmall lat={my_event.latitude}
+    var marker_list = this.props.events.map(my_event =>
+    <EventMarkerSmall key={my_event.id.toString()}
+                      lat={my_event.latitude}
                       lng={my_event.longitude}
                       name={my_event.name} />);
 
@@ -54,18 +77,17 @@ class SimpleMap extends Component {
 }
 
 class MapPage extends Component {
-  static defaultProps = {
-    latitude: 0.0,
-    longitude: 0.0,
-    showAddEventModal: false,
-    events:[]
-  };
 
   constructor(props){
     super(props);
-    this.state = {latitude:props.latitude,
-                  longitude:props.longitude,
-                  events:props.events};
+
+    this.state = {
+                  latitude:0.0,
+                  longitude:0.0,
+                  events:[],
+                  showAddEventModal:false
+                  };
+
     this.componentDidMount = this.componentDidMount.bind(this);
     this.resetEvents = this.resetEvents.bind(this);
   }
@@ -73,8 +95,11 @@ class MapPage extends Component {
   //called to reset our event list, used initially when component mounts
   //or when a search is performed
   //will be done by making an API call, right now just returns all events
-  resetEvents(){
-    fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${this.state.latitude}&lng=${this.state.longitude}`)
+  resetEvents(latitude, longitude){
+    console.log('reset');
+    console.log(latitude);
+
+    fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${latitude}&lng=${longitude}`)
     .then(function(response){
       if(response.ok){
         return response.json();
@@ -82,50 +107,63 @@ class MapPage extends Component {
         throw new Error('Error in MapPage.js resetEvents, Network response not okay')
       }
     }).then(json => {
-      this.setState({events:json})});
+      this.setState({events:json, latitude:latitude, longitude:longitude})
+    });
   }
 
   componentDidMount(){
-      const handle = this.props.match.params.latlong;
-      var floatLat = 30.27;
-      var floatLng = -97.74
 
-      if(handle){
-          var latlong = handle.split("_")
-          var floatLat = parseFloat(latlong[0]);
-          var floatLng = parseFloat(latlong[1]);
+    const handle = this.props.match.params.latlong;
+
+    console.log(handle);
+
+    let floatLat;
+    let floatLng;
+
+    console.log('Component Did Mount'+handle);
+
+    if(handle){
+        var latlong = handle.split("_")
+        floatLat = parseFloat(latlong[0]);
+        floatLng = parseFloat(latlong[1]);
+        console.log(latlong);
+    }else{
+       //austin lat long
+       floatLat = 30.27;
+       floatLng = -97.74;
+       console.log(floatLng);
+    }
+
+    this.setState({latitude:floatLat, longitude:floatLng});
+
+    fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${floatLat.toString()}&lng=${floatLng.toString()}`)
+    .then(function(response){
+      if(response.ok){
+        return response.json();
+      }else{
+        throw new Error('Error in MapPage.js resetEvents, Network response not okay')
       }
-
-      fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${floatLat}&lng=${floatLng}`)
-      .then(function(response){
-        if(response.ok){
-          return response.json();
-        }else{
-          throw new Error('Error in MapPage.js resetEvents, Network response not okay')
-        }
-      }).then(json => {
-        this.setState({events:json})
-      });
-
-      this.setState({latitude:floatLat, longitude:floatLng});
+    }).then(json => {
+      this.setState({events:json})
+    });
   }
 
-
   render(){
-    var event_list = []
 
-    for(let i = 0; i < this.state.events.length; i++){
-      event_list.push(<ListGroup.Item>{this.state.events[i].name}</ListGroup.Item>)
+    if(this.state.events.length === 0){
+      return null;
     }
+
+    console.log('-------');
+    console.log(this.state.events);
+    console.log(this.state.latitude);
 
     return(
       <div>
         <Container className='centered'>
           <Row>
             <Col xs={4}>
-              <ListGroup>
-                {event_list}
-              </ListGroup>
+              <EventList events={this.state.events} />
             </Col>
             <Col xs={8}>
               <SimpleMap center={{lat:this.state.latitude,
@@ -133,6 +171,7 @@ class MapPage extends Component {
                          events={this.state.events}/>
             </Col>
           </Row>
+
           <Row>
             <Col xs={12}>
               <Button variant="primary"
@@ -142,7 +181,7 @@ class MapPage extends Component {
               <Modal show={this.state.showAddEventModal}
                      onHide={()=>{
                                   this.setState({showAddEventModal:false});
-                                  this.resetEvents();
+                                  this.resetEvents(this.state.latitude, this.state.longitude);
                                   }}>
                 <Modal.Header closeButton>
                   <Modal.Title>Add Event</Modal.Title>

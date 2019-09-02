@@ -8,7 +8,7 @@ import javax.persistence.Id;
 @Entity // This tells Hibernate to make a table out of this class
 public class User {
     @Id
-	//GenerationType.TABLE makes sure each entry in this table has a unique id
+	  //GenerationType.TABLE makes sure each entry in this table has a unique id
     @GeneratedValue(strategy=GenerationType.TABLE)
     private Integer id;
 
@@ -51,7 +51,6 @@ public class User {
 	public String getPassword(){ return password; }
 
 	public void setPassword(String password){ this.password = password; }
-    
-    
-}
 
+
+}
