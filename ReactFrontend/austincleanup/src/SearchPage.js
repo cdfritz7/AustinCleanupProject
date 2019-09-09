@@ -13,8 +13,8 @@ class SearchPage extends Component{
   constructor(props){
     super(props);
     this.state={search:'',
-                latitude:'',
-                longitude:'',
+                latitude:'30.27',
+                longitude:'-97.74',
                 toMapPage: false,
                 isValidSearchStr: false};
     this.handleChange = this.handleChange.bind(this);
@@ -46,8 +46,9 @@ class SearchPage extends Component{
   }
 
   render(){
+    console.log('test')
     if(this.state.toMapPage){
-      var redirectURL = `/MapPage/${this.state.latitude}_${this.state.longitude}`;
+      var redirectURL = `/MapPage/?lat=${this.state.latitude}&lng=${this.state.longitude}`;
       return <Redirect to={redirectURL}/>
     }else{
     return (

@@ -81,9 +81,30 @@ class MapPage extends Component {
   constructor(props){
     super(props);
 
+    const search = props.location.search;
+    console.log('Constructor '+search);
+
+    var floatLat;
+    var floatLng;
+
+    if(search){
+        var latlong = search.slice(1).split("&");
+        console.log(latlong);
+        floatLat = parseFloat(latlong[0].slice([4]));
+        floatLng = parseFloat(latlong[1].slice([4]));
+
+        console.log(latlong);
+    }else{
+       //austin lat long
+       floatLat = 30.27;
+       floatLng = -97.74;
+       console.log(floatLng);
+    }
+
     this.state = {
-                  latitude:0.0,
-                  longitude:0.0,
+                  latitude:floatLat,
+                  longitude:floatLng,
+                  search_str:this.props.match.params.latlong,
                   events:[],
                   showAddEventModal:false
                   };
@@ -112,31 +133,11 @@ class MapPage extends Component {
   }
 
   componentDidMount(){
+    console.log('cdm')
+    console.log(this.state.latitude)
+    console.log(this.state.longitude)
 
-    const handle = this.props.match.params.latlong;
-
-    console.log(handle);
-
-    let floatLat;
-    let floatLng;
-
-    console.log('Component Did Mount'+handle);
-
-    if(handle){
-        var latlong = handle.split("_")
-        floatLat = parseFloat(latlong[0]);
-        floatLng = parseFloat(latlong[1]);
-        console.log(latlong);
-    }else{
-       //austin lat long
-       floatLat = 30.27;
-       floatLng = -97.74;
-       console.log(floatLng);
-    }
-
-    this.setState({latitude:floatLat, longitude:floatLng});
-
-    fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${floatLat.toString()}&lng=${floatLng.toString()}`)
+    fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${this.state.latitude.toString()}&lng=${this.state.longitude.toString()}`)
     .then(function(response){
       if(response.ok){
         return response.json();
