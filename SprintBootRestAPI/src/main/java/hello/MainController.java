@@ -74,22 +74,24 @@ public class MainController {
 
 		Iterable<User> user_list = userRepository.findAll();
 
+		JSONObject retString = new JSONObject();
+
 		for(User u: user_list){
 			//the username string could also be an email
 			if(u.getUsername().equals(username) || u.getEmail().equals(username)){
 				if(u.getPassword().equals(password)){
-					String myString = new JSONObject()
-         						.put("IsValid", "True").toString();
-					return myString;
+					retString.put("IsValid", "True");
+					retString.put("UserId", u.getId());
+					return retString.toString();
 				}
 			}
 		}
 
 		System.out.println("False");
 
-		String myString = new JSONObject()
-							.put("IsValid", "False").toString();
-		return myString;
+		retString.put("IsValid", "False");
+		retString.put("UserId", "Null");
+		return retString.toString();
 	}
 
 
@@ -174,14 +176,16 @@ public class MainController {
 	@Autowired
 	private UserEventMapRepository userEventRepository;
 
+	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/addUserEvent")
-	public @ResponseBody String addUserEventInteraction(@RequestParam String userId,
-														@RequestParam String eventId,
-														@RequestParam String isOrganizer){
+	public @ResponseBody String addUserEventInteraction(@RequestBody String jsonStr){
+
+		JSONObject jObject = new JSONObject(jsonStr);
+
 		UserEvent ue = new UserEvent();
-		ue.setUserId(Integer.parseInt(userId));
-		ue.setEventId(Integer.parseInt(eventId));
-		ue.setOrganizer(Boolean.parseBoolean(isOrganizer));
+		ue.setUserId(Integer.parseInt(jObject.getString("userId")));
+		ue.setEventId(Integer.parseInt(jObject.getString("eventId")));
+		ue.setOrganizer(Boolean.parseBoolean(jObject.getString("isOrganizer")));
 
 		userEventRepository.save(ue);
 		return "User/Event Mapping Saved";
@@ -203,4 +207,19 @@ public class MainController {
 		return userEventRepository.findById(Integer.parseInt(id));
 	}
 
+	@CrossOrigin(origins = "http://localhost:3000") //so we can make requests from react when in development revisit
+	@GetMapping("/eventsByUserId");
+	public @ResponseBody Iterable<Event> getEventsByUserId(@RequestParam String id){
+		Iterable<UserEvent> all_user_events = userEventRepository.findAll();
+		ArrayList<Event> my_user_events = new ArrayList<Event>();
+		Integer myId = Integer.parseInt(id);
+
+		for(UserEvent ue: all_user_events){
+			if(ue.getUserId().equals(myId)){
+				my_user_events.add(EventRepository.findById(ue.getEventId()));
+			}
+		}
+
+		return my_user_events;
+	}
 }

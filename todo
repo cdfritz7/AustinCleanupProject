@@ -1,24 +1,4 @@
-==============
--Backend
-- make something to get events associated with a username
-- remove all events and add some good test events
-
-===============
--Frontend
-- make map focus on current location
-- populate map with events when the map changes center/zooms
-- add profile page
-- add events on profile page
-- allow users to sign up for events
-- allow users to delete accounts
-- update user sign up (confirm passwords, reset password emails, block out passwords)
-
-==============
-- scure api calls
-- add in other security from https://spring.io/guides/gs/accessing-data-mysql/
-- docker container for frontend
-- docker container for database
-- docker container for API
+https://trello.com/b/RjaEIPI2/volunteerism
 
 =========
 - When Deploying - Revisit the @CrossOrigin(origins = "http://localhost:3000") in the spring boot MainController.java

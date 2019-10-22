@@ -6,31 +6,10 @@ import {Container,
         ListGroup,
         Modal,
         Button} from 'react-bootstrap/';
-
+import ViewEventComponent from './ViewEventComponent.js';
 import AddEventComponent from './AddEventComponent.js';
+import EventList from './EventList.js';
 import './css/MapPage.css';
-
-class EventList extends Component {
-  render(){
-
-    var event_list = this.props.events.map(my_event =>
-    <ListGroup.Item key={my_event.id.toString()} eventKey={my_event.id.toString()}>
-    {my_event.name}
-    </ListGroup.Item>
-    )
-
-    console.log(this.props.events);
-    console.log(event_list);
-
-    return (
-      <div>
-        <ListGroup>
-          {event_list}
-        </ListGroup>
-      </div>
-    )
-  }
-}
 
 class EventMarkerSmall extends Component {
   constructor(props){
@@ -82,23 +61,19 @@ class MapPage extends Component {
     super(props);
 
     const search = props.location.search;
-    console.log('Constructor '+search);
 
     var floatLat;
     var floatLng;
 
     if(search){
         var latlong = search.slice(1).split("&");
-        console.log(latlong);
         floatLat = parseFloat(latlong[0].slice([4]));
         floatLng = parseFloat(latlong[1].slice([4]));
 
-        console.log(latlong);
     }else{
        //austin lat long
        floatLat = 30.27;
        floatLng = -97.74;
-       console.log(floatLng);
     }
 
     this.state = {
@@ -106,7 +81,8 @@ class MapPage extends Component {
                   longitude:floatLng,
                   search_str:this.props.match.params.latlong,
                   events:[],
-                  showAddEventModal:false
+                  showAddEventModal:false,
+                  showViewEventModal:false
                   };
 
     this.componentDidMount = this.componentDidMount.bind(this);
@@ -117,9 +93,6 @@ class MapPage extends Component {
   //or when a search is performed
   //will be done by making an API call, right now just returns all events
   resetEvents(latitude, longitude){
-    console.log('reset');
-    console.log(latitude);
-
     fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${latitude}&lng=${longitude}`)
     .then(function(response){
       if(response.ok){
@@ -133,10 +106,6 @@ class MapPage extends Component {
   }
 
   componentDidMount(){
-    console.log('cdm')
-    console.log(this.state.latitude)
-    console.log(this.state.longitude)
-
     fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${this.state.latitude.toString()}&lng=${this.state.longitude.toString()}`)
     .then(function(response){
       if(response.ok){
@@ -150,21 +119,13 @@ class MapPage extends Component {
   }
 
   render(){
-
-    if(this.state.events.length === 0){
-      return null;
-    }
-
-    console.log('-------');
-    console.log(this.state.events);
-    console.log(this.state.latitude);
-
     return(
       <div>
         <Container className='centered'>
           <Row>
             <Col xs={4}>
-              <EventList events={this.state.events} />
+              <EventList events={this.state.events}
+                         onClick={(showevent, event)=>{this.setState(showevent, event)}}/>
             </Col>
             <Col xs={8}>
               <SimpleMap center={{lat:this.state.latitude,
@@ -179,6 +140,8 @@ class MapPage extends Component {
                       onClick={()=>{this.setState({showAddEventModal:true})}}>
                 Add Event
               </Button>
+
+              {/* modal for adding events*/}
               <Modal show={this.state.showAddEventModal}
                      onHide={()=>{
                                   this.setState({showAddEventModal:false});
@@ -188,6 +151,14 @@ class MapPage extends Component {
                   <Modal.Title>Add Event</Modal.Title>
                 </Modal.Header>
                 <Modal.Body><AddEventComponent /></Modal.Body>
+              </Modal>
+
+              {/*modal for viewing events*/}
+              <Modal show={this.state.showViewEventModal}
+                     onHide={()=>{this.setState({showViewEventModal:false})}}
+                     >
+                <Modal.Header closeButton/>
+                <Modal.Body><ViewEventComponent event={this.state.displayedEvent}/></Modal.Body>
               </Modal>
             </Col>
           </Row>
