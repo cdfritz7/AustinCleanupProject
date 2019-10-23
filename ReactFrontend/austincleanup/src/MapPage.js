@@ -81,6 +81,8 @@ class MapPage extends Component {
                   longitude:floatLng,
                   search_str:this.props.match.params.latlong,
                   events:[],
+                  isLoggedIn:sessionStorage.getItem("isLoggedOn"),
+                  userId:sessionStorage.getItem("userId"),
                   showAddEventModal:false,
                   showViewEventModal:false
                   };
@@ -111,7 +113,7 @@ class MapPage extends Component {
       if(response.ok){
         return response.json();
       }else{
-        throw new Error('Error in MapPage.js resetEvents, Network response not okay')
+        throw new Error('Error in MapPage.js componentDidMount, Network response not okay')
       }
     }).then(json => {
       this.setState({events:json})
@@ -158,7 +160,9 @@ class MapPage extends Component {
                      onHide={()=>{this.setState({showViewEventModal:false})}}
                      >
                 <Modal.Header closeButton/>
-                <Modal.Body><ViewEventComponent event={this.state.displayedEvent}/></Modal.Body>
+                <Modal.Body><ViewEventComponent event={this.state.displayedEvent}
+                                                isLoggedIn={this.state.isLoggedIn}
+                                                userId={this.state.userId}/></Modal.Body>
               </Modal>
             </Col>
           </Row>

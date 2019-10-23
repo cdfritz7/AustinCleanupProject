@@ -207,19 +207,35 @@ public class MainController {
 		return userEventRepository.findById(Integer.parseInt(id));
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000") //so we can make requests from react when in development revisit
-	@GetMapping("/eventsByUserId");
-	public @ResponseBody Iterable<Event> getEventsByUserId(@RequestParam String id){
+	@CrossOrigin(origins = "http://localhost:3000")
+	@GetMapping("/isUserSignedUpForEvent")
+	public @ResponseBody Boolean isUserSignedUpForEvent(@RequestParam String userId, @RequestParam String eventId){
 		Iterable<UserEvent> all_user_events = userEventRepository.findAll();
-		ArrayList<Event> my_user_events = new ArrayList<Event>();
-		Integer myId = Integer.parseInt(id);
 
 		for(UserEvent ue: all_user_events){
-			if(ue.getUserId().equals(myId)){
-				my_user_events.add(EventRepository.findById(ue.getEventId()));
+			if(Integer.toString(ue.getEventId()).equals(eventId) && Integer.toString(ue.getUserId()).equals(userId)){
+				return true;
 			}
 		}
 
+		return false;
+	}
+
+	@CrossOrigin(origins = "http://localhost:3000") //so we can make requests from react when in development revisit
+	@GetMapping("/eventsByUserId")
+	public @ResponseBody Iterable<Event> getEventsByUserId(@RequestParam String id){
+		Iterable<UserEvent> all_user_events = userEventRepository.findAll();
+		ArrayList<Event> my_user_events = new ArrayList<Event>();
+
+		for(UserEvent ue: all_user_events){
+			if(Integer.toString(ue.getUserId()).equals(id)){
+				Optional<Event> potential_event = eventRepository.findById(ue.getEventId());
+			  if(potential_event.isPresent()){
+					my_user_events.add(potential_event.get());
+				}
+			}
+		}
+		System.out.println(my_user_events);
 		return my_user_events;
 	}
 }
