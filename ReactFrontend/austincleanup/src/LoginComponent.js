@@ -60,7 +60,7 @@ class LoginComponent extends Component {
                   </Form.Group>
                   <Form.Group>
                     <Form.Label>Password</Form.Label>
-                    <Form.Control value={this.props.password} onChange={this.handlePasswordChange}></Form.Control>
+                    <Form.Control type="password" value={this.props.password} onChange={this.handlePasswordChange}></Form.Control>
                   </Form.Group>
                   <Button variant="primary" type="submit">
                     Log in

@@ -89,6 +89,7 @@ class MapPage extends Component {
 
     this.componentDidMount = this.componentDidMount.bind(this);
     this.resetEvents = this.resetEvents.bind(this);
+    this.removeSignUp = this.removeSignUp.bind(this);
   }
 
   //called to reset our event list, used initially when component mounts
@@ -118,6 +119,10 @@ class MapPage extends Component {
     }).then(json => {
       this.setState({events:json})
     });
+  }
+
+  removeSignUp(){
+    this.setState({showViewEventModal:false});
   }
 
   render(){
@@ -162,7 +167,8 @@ class MapPage extends Component {
                 <Modal.Header closeButton/>
                 <Modal.Body><ViewEventComponent event={this.state.displayedEvent}
                                                 isLoggedIn={this.state.isLoggedIn}
-                                                userId={this.state.userId}/></Modal.Body>
+                                                userId={this.state.userId}
+                                                removeSignUp={this.removeSignUp}/></Modal.Body>
               </Modal>
             </Col>
           </Row>

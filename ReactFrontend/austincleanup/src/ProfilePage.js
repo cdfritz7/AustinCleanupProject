@@ -15,16 +15,15 @@ class ProfileContent extends Component {
 
   constructor(props){
     super(props)
-
     this.state = {
       showViewEventModal:false
     }
-
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.removeSignUp = this.removeSignUp.bind(this);
   }
 
-  handleSubmit(){
-    this.props.logOff();
+  removeSignUp(){
+    this.setState({showViewEventModal:false});
+    this.props.resetEvents();
   }
 
   render(){
@@ -42,7 +41,7 @@ class ProfileContent extends Component {
         <Row>
           <Col xs={12}>
             <Button variant="primary"
-                    onClick={() => {this.handleSubmit()}}>
+                    onClick={() => {this.props.logOff()}}>
               Log Out
             </Button>
           </Col>
@@ -55,7 +54,8 @@ class ProfileContent extends Component {
           <Modal.Header closeButton/>
           <Modal.Body><ViewEventComponent event={this.state.displayedEvent}
                                           isLoggedIn={this.props.isLoggedIn}
-                                          userId={this.props.userId}/></Modal.Body>
+                                          userId={this.props.userId}
+                                          removeSignUp={this.removeSignUp}/></Modal.Body>
         </Modal>
 
       </Container>
@@ -116,9 +116,9 @@ class ProfilePage extends Component {
     console.log(result);
     if(result.IsValid==="True"){
       this.resetEvents(result.UserId);
-      this.setState({login_response:result.IsValid, user_id:result.UserId});
-      sessionStorage.setItem('isLoggedOn', this.state.login_response);
-      sessionStorage.setItem('userId', this.state.user_id);
+      this.setState({login_response:result.IsValid, userId:result.UserId});
+      sessionStorage.setItem('isLoggedOn', result.IsValid);
+      sessionStorage.setItem('userId', result.UserId);
     }
 
   }
@@ -156,19 +156,20 @@ class ProfilePage extends Component {
     var ret_component;
 
     console.log(sessionStorage.getItem("userId"));
-    console.log(this.state.user_id);
+    console.log(this.state.userId);
     if(is_logged_in === "True"){
       ret_component = <ProfileContent logOff={this.handleLogoffSubmit}
                                        events={this.state.events}
                                        isLoggedIn={this.state.login_response}
-                                       userId={this.state.userId}/>;
+                                       userId={this.state.userId}
+                                       resetEvents={this.resetEvents}/>;
 
     }else{
       ret_component = <LoginComponent onLoginSubmit={this.handleLogonSubmit}
                                       handleUsernameChange={this.handleUsernameChange}
                                       handlePasswordChange={this.handlePasswordChange}
                                       username={this.state.username}
-                                      passowrd={this.state.password}/>;
+                                      password={this.state.password}/>;
     }
 
     return (

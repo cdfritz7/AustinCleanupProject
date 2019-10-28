@@ -11,10 +11,11 @@ class ViewEventComponent extends Component{
     super(props);
 
     this.state = {
-      isSignedUp : false
+      isSignedUp:false
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleRemoval = this.handleRemoval.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
   }
 
@@ -37,16 +38,43 @@ class ViewEventComponent extends Component{
 
   componentDidMount(){
     //finds if the user is registered for the event
-    fetch(`http://localhost:8080/austinCleanupAPI/isUserSignedUpForEvent?userId=${this.props.userId}&eventId=${this.props.event.id}`)
-    .then(function(response){
-      if(response.ok){
-        return response.json();
-      }else{
-        throw new Error('Error in ViewEventComponent.js componentDidMount, Network response not okay')
-      }
-    }).then(json => {
-      this.setState({isSignedUp:json})
-    });
+    if(this.props.isLoggedIn){
+      fetch(`http://localhost:8080/austinCleanupAPI/isUserSignedUpForEvent?userId=${this.props.userId}&eventId=${this.props.event.id}`)
+      .then(function(response){
+        if(response.ok){
+          return response.json();
+        }else{
+          throw new Error('Error in ViewEventComponent.js componentDidMount, Network response not okay')
+        }
+      }).then(json => {
+        console.log(json)
+        this.setState({isSignedUp:json})
+      });
+    }
+
+  }
+
+  handleRemoval(){
+    if(this.props.isLoggedIn){
+      fetch('http://localhost:8080/austinCleanupAPI/deleteUserEvent', {
+        method:"POST",
+        headers: {'Accept': 'application/json', 'Content-Type':'application/json'},
+        body: JSON.stringify({
+          'userId': this.props.userId.toString(),
+          'eventId': this.props.event.id.toString()
+        })
+      }).then(function(response){
+        if(response.ok){
+          return response.json();
+        }else{
+          throw new Error('Error in ViewEventComponent.js, user event interaction not found in database');
+        }
+      }).then(json=>{
+        if(typeof this.props.removeSignUp != 'undefined'){
+          this.props.removeSignUp();
+        }
+      });
+    }
   }
 
   render(){
@@ -54,12 +82,17 @@ class ViewEventComponent extends Component{
     var but;
     if(this.props.isLoggedIn == "True"){
       if(this.state.isSignedUp){
-        but = <Button>You're Already Signed up</Button>
+        if(!this.props.removeSignUp){
+          but = <Button>You're Already Signed Up!</Button>
+        }else{
+          but = <Button variant="warning"
+                        onClick={()=>(this.handleRemoval())}>Remove Yourself</Button>
+        }
       }else{
         but = <Button onClick={()=>this.handleSubmit()}>Sign Up!</Button>
       }
     }else{
-      but = <Button variant="secondary">
+      but = <Button variant="light">
         <Link to="/Profile">Sign In to Sign Up</Link>
       </Button>
     }
