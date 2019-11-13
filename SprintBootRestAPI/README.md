@@ -4,6 +4,10 @@ you must have your mysql setup to mesh with the
 ./src/main/resources/application.properties
 file
 
+the spring-boot application was set up using the following tutorial
+therefore, dependencies listed in the tutorial must be met to run the server
+https://spring.io/guides/gs/accessing-data-mysql/
+
 -----
 if you are getting an exception when tryin to run the maven file,
 the issue may be that your mysql is not using a time zone that
@@ -19,5 +23,3 @@ default-time-zone = '+00:00'
 You can find the location of your my.cnf file by using the following command
 $locate my.cnf
 -----
-
-https://spring.io/guides/gs/accessing-data-mysql/

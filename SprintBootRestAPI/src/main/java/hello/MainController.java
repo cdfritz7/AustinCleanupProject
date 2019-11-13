@@ -115,7 +115,6 @@ public class MainController {
 	public @ResponseBody String deleteUser(@RequestParam String id){
 
 		// @RequestParam means it is a parameter from the GET or POST request
-
 		userRepository.deleteById(Integer.parseInt(id));
 		return "User Deleted";
 	}
@@ -177,6 +176,7 @@ public class MainController {
 	public @ResponseBody String addEvent(@RequestBody String jsonStr){
 
 		JSONObject jObject = new JSONObject(jsonStr);
+		JSONObject retString = new JSONObject();
 
 		Event n = new Event();
 		n.setName(jObject.getString("name"));
@@ -186,7 +186,9 @@ public class MainController {
 		n.setDescription(jObject.getString("description"));
 		eventRepository.save(n);
 
-		return "Event Saved";
+		retString.put("EventId", Integer.toString(n.getId()));
+
+		return retString.toString();
 	}
 
 	@PostMapping("/deleteEventById")
@@ -277,8 +279,14 @@ public class MainController {
 
 		for(UserEvent ue: all_user_events){
 			if(Integer.toString(ue.getEventId()).equals(eventId) && Integer.toString(ue.getUserId()).equals(userId)){
-				userEventRepository.deleteById(ue.getId());
-				return true;
+				if(!ue.getOrganizer()){
+					userEventRepository.deleteById(ue.getId());
+					return true;
+				}else{
+					//organizers should not be allowed to delete the event interaction
+					//without deleting the overall event and other user event interactions
+					return false;
+				}
 			}
 		}
 
@@ -295,18 +303,32 @@ public class MainController {
 		return userEventRepository.findById(Integer.parseInt(id));
 	}
 
+	/*
+	returns JSON string specifying if a user is signed up for an event
+	and if the user is an organizer for the event
+	*/
 	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/isUserSignedUpForEvent")
-	public @ResponseBody Boolean isUserSignedUpForEvent(@RequestParam String userId, @RequestParam String eventId){
+	public @ResponseBody String isUserSignedUpForEvent(@RequestParam String userId, @RequestParam String eventId){
 		Iterable<UserEvent> all_user_events = userEventRepository.findAll();
+		JSONObject retString = new JSONObject();
 
 		for(UserEvent ue: all_user_events){
-			if(Integer.toString(ue.getEventId()).equals(eventId) && Integer.toString(ue.getUserId()).equals(userId)){
-				return true;
+			if(Integer.toString(ue.getEventId()).equals(eventId) &&
+				 Integer.toString(ue.getUserId()).equals(userId)){
+				retString.put("isSignedUp", true);
+				if(ue.getOrganizer()){
+					retString.put("isOrganizer", true);
+				}else{
+					retString.put("isOrganizer", false);
+				}
+				return retString.toString();
 			}
 		}
 
-		return false;
+		retString.put("isSignedUp", false);
+		retString.put("isOrganizer", false);
+		return retString.toString();
 	}
 
 	@CrossOrigin(origins = "http://localhost:3000") //so we can make requests from react when in development revisit
@@ -323,7 +345,67 @@ public class MainController {
 				}
 			}
 		}
-		
+
 		return my_user_events;
 	}
+
+	//splits the events the user is associated with by those the user is an organizer
+	//of and those they are not an organizer of
+	@CrossOrigin(origins = "http://localhost:3000")
+	@GetMapping("/detailedEventsByUserId")
+	public @ResponseBody String getDetailedEventsByUserId(@RequestParam String id){
+		Iterable<UserEvent> all_user_events = userEventRepository.findAll();
+		ArrayList<Event> signed_up_events = new ArrayList<Event>();
+		ArrayList<Event> organized_events = new ArrayList<Event>();
+
+		for(UserEvent ue: all_user_events){
+			if(Integer.toString(ue.getUserId()).equals(id)){
+				Optional<Event> potential_event = eventRepository.findById(ue.getEventId());
+				if(potential_event.isPresent()){
+					if(ue.getOrganizer()){
+						organized_events.add(potential_event.get());
+					}else{
+						signed_up_events.add(potential_event.get());
+					}
+				}
+			}
+		}
+
+		JSONObject retString = new JSONObject();
+		retString.put("signedUpEvents", signed_up_events);
+		retString.put("organizedEvents", organized_events);
+
+		return retString.toString();
+	}
+
+	/*
+	------------------------------------------------------------
+	Absolute Interactions
+	commands that combine interactions between repositories
+	------------------------------------------------------------
+	*/
+
+	//deletes an event from the event repository, and deletes all userEvents
+	//that contain that event
+	@CrossOrigin(origins = "http://localhost:3000")
+	@PostMapping("/absoluteDeleteEventById")
+	public @ResponseBody String absoluteDeleteEvent(@RequestBody String jsonStr){
+
+		JSONObject jObject = new JSONObject(jsonStr);
+		String id = jObject.getString("id");
+
+		eventRepository.deleteById(Integer.parseInt(id));
+
+		Iterable<UserEvent> all_user_events = userEventRepository.findAll();
+
+		for(UserEvent ue: all_user_events){
+			if(Integer.toString(ue.getEventId()).equals(id)){
+				userEventRepository.deleteById(ue.getId());
+			}
+		}
+
+		return "Event Absolutely Deleted";
+	}
+
+
 }

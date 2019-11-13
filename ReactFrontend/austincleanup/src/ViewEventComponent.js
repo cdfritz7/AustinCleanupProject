@@ -11,11 +11,13 @@ class ViewEventComponent extends Component{
     super(props);
 
     this.state = {
-      isSignedUp:false
+      isSignedUp:false,
+      isOrganizer:false
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleRemoval = this.handleRemoval.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
     this.componentDidMount = this.componentDidMount.bind(this);
   }
 
@@ -47,8 +49,7 @@ class ViewEventComponent extends Component{
           throw new Error('Error in ViewEventComponent.js componentDidMount, Network response not okay')
         }
       }).then(json => {
-        console.log(json)
-        this.setState({isSignedUp:json})
+        this.setState({isSignedUp:json.isSignedUp, isOrganizer:json.isOrganizer});
       });
     }
 
@@ -77,24 +78,53 @@ class ViewEventComponent extends Component{
     }
   }
 
+  handleDelete(){
+    console.log(this.props.event.id.toString());
+    fetch('http://localhost:8080/austinCleanupAPI/absoluteDeleteEventById', {
+      method:'POST',
+      headers: {'Accept': 'application/json', 'Content-Type':'application/json'},
+      body: JSON.stringify({
+         "id": this.props.event.id.toString()
+      })
+    }).then(function(response){
+      if(!response.ok){
+        throw new Error('Error in ViewEventComponent.js handleDelete, event not found in database');
+      }
+    }).then(json=>{
+      if(typeof this.props.removeSignUp != 'undefined'){
+        this.props.removeSignUp();
+      }
+    });
+  }
+
   render(){
 
     var but;
-    if(this.props.isLoggedIn == "True"){
-      if(this.state.isSignedUp){
-        if(!this.props.removeSignUp){
-          but = <Button>You're Already Signed Up!</Button>
+    if(!this.state.isOrganizer){
+      if(this.props.isLoggedIn === "True"){
+        if(this.state.isSignedUp){
+          if(!this.props.removeSignUp){
+            but = <Button>You're Already Signed Up!</Button>
+          }else{
+            but = <Button variant="warning"
+                          onClick={()=>(this.handleRemoval())}>Remove Yourself</Button>
+          }
         }else{
-          but = <Button variant="warning"
-                        onClick={()=>(this.handleRemoval())}>Remove Yourself</Button>
+          but = <Button onClick={()=>this.handleSubmit()}>Sign Up!</Button>
         }
       }else{
-        but = <Button onClick={()=>this.handleSubmit()}>Sign Up!</Button>
+        but = <Button variant="light">
+          <Link to="/Profile">Sign In to Create Events</Link>
+        </Button>
       }
-    }else{
-      but = <Button variant="light">
-        <Link to="/Profile">Sign In to Sign Up</Link>
-      </Button>
+    }
+
+    var deleteButton;
+    if(this.props.isLoggedIn === "True"){
+      if(this.state.isOrganizer){
+        deleteButton = <Button onClick={()=>this.handleDelete()}
+                               variant="danger"> Delete Event </Button>
+      }
     }
 
     return(
@@ -103,6 +133,7 @@ class ViewEventComponent extends Component{
         <h3>{this.props.event.latitude}</h3>
         <h3>{this.props.event.longitude}</h3>
         {but}
+        {deleteButton}
       </div>
     )
 

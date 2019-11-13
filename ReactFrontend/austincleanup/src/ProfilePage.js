@@ -31,10 +31,16 @@ class ProfileContent extends Component {
       <Container>
         <Row>
           <Col xs={4}>
-
+            <h4> Profile Information </h4>
           </Col>
-          <Col xs={8}>
-            <EventList events={this.props.events}
+          <Col xs={4}>
+            <h4> Events I'm Signed Up For </h4>
+            <EventList events={this.props.signedUpEvents}
+                       onClick={(showevent, event)=>{this.setState(showevent, event)}}/>
+          </Col>
+          <Col xs={4}>
+            <h4> My Organized Events </h4>
+            <EventList events={this.props.organizedEvents}
                        onClick={(showevent, event)=>{this.setState(showevent, event)}}/>
           </Col>
         </Row>
@@ -75,7 +81,8 @@ class ProfilePage extends Component {
       userId:sessionStorage.getItem("userId"),
       username:'',
       password:'',
-      events:[]
+      organizedEvents:[],
+      signedUpEvents:[]
     };
 
     this.handleLogonSubmit = this.handleLogonSubmit.bind(this);
@@ -92,7 +99,8 @@ class ProfilePage extends Component {
                    username:'',
                    userId:undefined,
                    password:'',
-                   events:[]});
+                   organizedEvents:[],
+                   signedUpEvents:[]});
 
     sessionStorage.setItem('isLoggedOn', "False");
     sessionStorage.setItem('userId', undefined);
@@ -100,8 +108,6 @@ class ProfilePage extends Component {
 
   async handleLogonSubmit(event){
     event.preventDefault();
-
-    console.log('Submitted');
 
     const response = await fetch('http://localhost:8080/austinCleanupAPI/checkIsUser', {
       method:"POST",
@@ -111,9 +117,9 @@ class ProfilePage extends Component {
         'password': this.state.password
       })
     });
+
     const result = await response.json();
 
-    console.log(result);
     if(result.IsValid==="True"){
       this.resetEvents(result.UserId);
       this.setState({login_response:result.IsValid, userId:result.UserId});
@@ -126,20 +132,17 @@ class ProfilePage extends Component {
   resetEvents(userId){
     if(typeof userId === 'undefined'){
       userId = sessionStorage.getItem("userId");
-      console.log(sessionStorage.getItem("userId"));
     }
 
-    console.log(userId);
-    fetch(`http://localhost:8080/austinCleanupAPI/eventsByUserId?id=${userId}`)
+    fetch(`http://localhost:8080/austinCleanupAPI/detailedEventsByUserId?id=${userId}`)
     .then(function(response){
       if(response.ok){
         return response.json();
       }else{
-        throw new Error('Error in ProfilePage.js, logged in userId not found in database');
+        throw new Error('Error in ProfilePage.js when calling signedUpEventsByUserId');
       }
     }).then(json=>{
-      console.log(json);
-      this.setState({events:json});
+      this.setState({signedUpEvents:json.signedUpEvents, organizedEvents:json.organizedEvents});
     });
   }
 
@@ -155,11 +158,10 @@ class ProfilePage extends Component {
     var is_logged_in = this.state.login_response;
     var ret_component;
 
-    console.log(sessionStorage.getItem("userId"));
-    console.log(this.state.userId);
     if(is_logged_in === "True"){
       ret_component = <ProfileContent logOff={this.handleLogoffSubmit}
-                                       events={this.state.events}
+                                       signedUpEvents={this.state.signedUpEvents}
+                                       organizedEvents={this.state.organizedEvents}
                                        isLoggedIn={this.state.login_response}
                                        userId={this.state.userId}
                                        resetEvents={this.resetEvents}/>;

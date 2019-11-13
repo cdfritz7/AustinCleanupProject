@@ -9,6 +9,7 @@ import {Container,
 import ViewEventComponent from './ViewEventComponent.js';
 import AddEventComponent from './AddEventComponent.js';
 import EventList from './EventList.js';
+import MapBoxMapComponent from './MapBoxMapComponent';
 import './css/MapPage.css';
 
 class EventMarkerSmall extends Component {
@@ -122,10 +123,18 @@ class MapPage extends Component {
   }
 
   removeSignUp(){
+    this.resetEvents(this.state.latitude, this.state.longitude);
     this.setState({showViewEventModal:false});
   }
 
   render(){
+    /*
+
+      <SimpleMap center={{lat:this.state.latitude,
+                          lng:this.state.longitude}}
+                 events={this.state.events}/>
+
+    */
     return(
       <div>
         <Container className='centered'>
@@ -135,9 +144,9 @@ class MapPage extends Component {
                          onClick={(showevent, event)=>{this.setState(showevent, event)}}/>
             </Col>
             <Col xs={8}>
-              <SimpleMap center={{lat:this.state.latitude,
-                                  lng:this.state.longitude}}
-                         events={this.state.events}/>
+              <MapBoxMapComponent lat={this.state.latitude} lng={this.state.longitude}
+                                  onMove={this.resetEvents}
+                                  events={this.state.events}/>
             </Col>
           </Row>
 
@@ -157,7 +166,9 @@ class MapPage extends Component {
                 <Modal.Header closeButton>
                   <Modal.Title>Add Event</Modal.Title>
                 </Modal.Header>
-                <Modal.Body><AddEventComponent /></Modal.Body>
+                <Modal.Body><AddEventComponent isLoggedIn={this.state.isLoggedIn}
+                                               userId={this.state.userId}/>
+                </Modal.Body>
               </Modal>
 
               {/*modal for viewing events*/}
@@ -168,7 +179,8 @@ class MapPage extends Component {
                 <Modal.Body><ViewEventComponent event={this.state.displayedEvent}
                                                 isLoggedIn={this.state.isLoggedIn}
                                                 userId={this.state.userId}
-                                                removeSignUp={this.removeSignUp}/></Modal.Body>
+                                                removeSignUp={this.removeSignUp}/>
+                </Modal.Body>
               </Modal>
             </Col>
           </Row>

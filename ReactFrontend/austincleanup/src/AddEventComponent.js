@@ -5,6 +5,7 @@ import {Form,
         Col,
         Card,
         Button} from 'react-bootstrap';
+import {Link} from 'react-router-dom';
 
 class AddEventComponent extends Component {
 
@@ -31,8 +32,9 @@ class AddEventComponent extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    //post to database
-    const response = fetch('http://localhost:8080/austinCleanupAPI/addEvent', {
+    //post event to database
+    const that = this;
+    fetch('http://localhost:8080/austinCleanupAPI/addEvent', {
       method: 'POST',
       headers: {'Accept': 'application/json', 'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -42,17 +44,36 @@ class AddEventComponent extends Component {
         'longitude': this.state.longitude,
         'description': this.state.description,
       })
+    }).then(function(response){
+      if(response.ok){
+        return response.json();
+      }else{
+        throw new Error('Error in AddEventComponent.js handleSubmit, Network response not okay')
+      }
+    }).then(json => {
+      //post userevent interaction to database
+      fetch('http://localhost:8080/austinCleanupAPI/addUserEvent', {
+        method: 'POST',
+        headers: {'Accept': 'application/json', 'Content-Type':'application/json'},
+        body: JSON.stringify({
+          'userId': this.props.userId,
+          'eventId': json.EventId,
+          'isOrganizer': "True"
+        })
+      }).then(function(response){
+        if(response.ok){
+            that.setState({
+              name:'',
+              address:'',
+              latitude:'',
+              longitude:'',
+              description:''
+            })
+        }else{
+          throw new Error('Error in AddEventComponent.js userevent post, Network response not okay')
+        }
+      })
     });
-
-    console.log(response);
-
-    this.setState({
-      name:'',
-      address:'',
-      latitude:'',
-      longitude:'',
-      description:''
-    })
   }
 
   handleNameChange(event){
@@ -76,35 +97,45 @@ class AddEventComponent extends Component {
   }
 
   render(){
-    return (
-        <div>
-          <Form onSubmit={this.handleSubmit}>
-            <Form.Group>
-              <Form.Label>Name</Form.Label>
-              <Form.Control value={this.state.name} placeholder="Enter Name of Event" onChange={this.handleNameChange}/>
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Address</Form.Label>
-              <Form.Control value={this.state.address} placeholder="Enter Address" onChange={this.handleAddressChange}/>
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Latitude</Form.Label>
-              <Form.Control value={this.state.latitude} placeholder="Enter Latitude" onChange={this.handleLatitudeChange}/>
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Longitude</Form.Label>
-              <Form.Control value={this.state.longitude} placeholder="Enter Longitude" onChange={this.handleLongitudeChange}/>
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Description</Form.Label>
-              <Form.Control value={this.state.description} placeholder="Enter Description" onChange={this.handleDescChange}/>
-            </Form.Group>
-            <Button variant="primary" type="submit">
-              Submit
-            </Button>
-          </Form>
-        </div>
+
+    if(this.props.isLoggedIn === "True"){
+      return (
+          <div>
+            <Form onSubmit={this.handleSubmit}>
+              <Form.Group>
+                <Form.Label>Name</Form.Label>
+                <Form.Control value={this.state.name} placeholder="Enter Name of Event" onChange={this.handleNameChange}/>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Address</Form.Label>
+                <Form.Control value={this.state.address} placeholder="Enter Address" onChange={this.handleAddressChange}/>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Latitude</Form.Label>
+                <Form.Control value={this.state.latitude} placeholder="Enter Latitude" onChange={this.handleLatitudeChange}/>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Longitude</Form.Label>
+                <Form.Control value={this.state.longitude} placeholder="Enter Longitude" onChange={this.handleLongitudeChange}/>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Description</Form.Label>
+                <Form.Control value={this.state.description} placeholder="Enter Description" onChange={this.handleDescChange}/>
+              </Form.Group>
+              <Button variant="primary" type="submit">
+                Submit
+              </Button>
+            </Form>
+          </div>
+        )
+    }else{
+      return(
+        <Button>
+          <Link to="/Profile">Sign In to Sign Up</Link>
+        </Button>
       )
+    }
+
 
   }
 }

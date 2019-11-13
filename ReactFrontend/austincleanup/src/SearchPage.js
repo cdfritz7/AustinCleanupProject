@@ -30,12 +30,21 @@ class SearchPage extends Component{
     event.preventDefault();
     console.log('Submitted');
 
-    //convert to latitude longitude
-    var latlng = this.state.search.split(" ");
-    var lat = latlng[0];
-    var lng = latlng[1];
-
-    this.setState({toMapPage:true, latitude:lat, longitude:lng});
+    //performs geocoding to transform search string into latitude longitude
+    //https://docs.mapbox.com/api/search/
+    const search = this.state.search.split(" ").join("%20");
+    const token = 'pk.eyJ1IjoiY2Rmcml0ejciLCJhIjoiY2sydzBmenM3MGF1djNrcWR3YzRmaGQ0aCJ9.y0TZwO3PN1sYjakT02t1fQ';
+    fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${search}.json?access_token=${token}`).then(function(response){
+        if(response.ok){
+          return response.json();
+        }else{
+          throw new Error('Error in searchpage.handleSubmit');
+        }
+    }).then(json=>{
+      var lat = json["features"][0]["geometry"]["coordinates"][1];
+      var lng = json["features"][0]["geometry"]["coordinates"][0];
+      this.setState({toMapPage:true, latitude:lat, longitude:lng});
+    });
   }
 
   handleChange(event){
@@ -60,7 +69,7 @@ class SearchPage extends Component{
               <Form onSubmit={this.handleSubmit}>
                 <Form.Group>
                   <Form.Control style={{width:'66vw', height:'6vh'}}
-                         placeholder="Type in latitude longitude"
+                         placeholder="Search!"
                          onChange={this.handleChange}/>
                 </Form.Group>
                 <Button variant="primary" type="submit">
