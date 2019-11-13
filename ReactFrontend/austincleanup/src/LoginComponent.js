@@ -38,7 +38,7 @@ class LoginComponent extends Component {
   //checks if user is logged on before rendering the component
   /*
   componentDidMount(){
-    let isLoggedOn = sessionStorage.getItem('isLoggedOn');
+    let isLoggedOn = localStorage.getItem('isLoggedOn');
     if(isLoggedOn === "True"){
       this.setState({login_response:"True"})
     }

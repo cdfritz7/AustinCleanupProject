@@ -10,7 +10,7 @@ import javax.persistence.Id;
 public class UserEvent {
     @Id
     //GenerationType.TABLE makes sure each entry in this table has a unique id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     private Integer userId;

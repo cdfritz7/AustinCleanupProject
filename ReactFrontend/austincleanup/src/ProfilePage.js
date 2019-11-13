@@ -77,8 +77,8 @@ class ProfilePage extends Component {
     super(props);
 
     this.state = {
-      login_response:sessionStorage.getItem("isLoggedOn"),
-      userId:sessionStorage.getItem("userId"),
+      login_response:localStorage.getItem("isLoggedOn"),
+      userId:localStorage.getItem("userId"),
       username:'',
       password:'',
       organizedEvents:[],
@@ -102,8 +102,8 @@ class ProfilePage extends Component {
                    organizedEvents:[],
                    signedUpEvents:[]});
 
-    sessionStorage.setItem('isLoggedOn', "False");
-    sessionStorage.setItem('userId', undefined);
+    localStorage.setItem('isLoggedOn', "False");
+    localStorage.setItem('userId', undefined);
   }
 
   async handleLogonSubmit(event){
@@ -123,15 +123,15 @@ class ProfilePage extends Component {
     if(result.IsValid==="True"){
       this.resetEvents(result.UserId);
       this.setState({login_response:result.IsValid, userId:result.UserId});
-      sessionStorage.setItem('isLoggedOn', result.IsValid);
-      sessionStorage.setItem('userId', result.UserId);
+      localStorage.setItem('isLoggedOn', result.IsValid);
+      localStorage.setItem('userId', result.UserId);
     }
 
   }
 
   resetEvents(userId){
     if(typeof userId === 'undefined'){
-      userId = sessionStorage.getItem("userId");
+      userId = localStorage.getItem("userId");
     }
 
     fetch(`http://localhost:8080/austinCleanupAPI/detailedEventsByUserId?id=${userId}`)

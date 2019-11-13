@@ -82,8 +82,8 @@ class MapPage extends Component {
                   longitude:floatLng,
                   search_str:this.props.match.params.latlong,
                   events:[],
-                  isLoggedIn:sessionStorage.getItem("isLoggedOn"),
-                  userId:sessionStorage.getItem("userId"),
+                  isLoggedIn:localStorage.getItem("isLoggedOn"),
+                  userId:localStorage.getItem("userId"),
                   showAddEventModal:false,
                   showViewEventModal:false
                   };
