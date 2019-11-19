@@ -114,7 +114,7 @@ class ViewEventComponent extends Component{
         }
       }else{
         but = <Button variant="light">
-          <Link to="/Profile">Sign In to Create Events</Link>
+          <Link to="/Profile">Sign In to Sign Up</Link>
         </Button>
       }
     }

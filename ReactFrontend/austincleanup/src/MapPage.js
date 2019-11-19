@@ -146,7 +146,8 @@ class MapPage extends Component {
             <Col xs={8}>
               <MapBoxMapComponent lat={this.state.latitude} lng={this.state.longitude}
                                   onMove={this.resetEvents}
-                                  events={this.state.events}/>
+                                  events={this.state.events}
+                                  testprop={1}/>
             </Col>
           </Row>
 

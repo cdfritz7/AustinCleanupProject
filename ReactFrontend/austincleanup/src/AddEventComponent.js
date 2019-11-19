@@ -130,8 +130,8 @@ class AddEventComponent extends Component {
         )
     }else{
       return(
-        <Button>
-          <Link to="/Profile">Sign In to Sign Up</Link>
+        <Button variant="light">
+          <Link to="/Profile">Sign In to Create Events</Link>
         </Button>
       )
     }
