@@ -61,11 +61,9 @@ class SearchPage extends Component{
       return <Redirect to={redirectURL}/>
     }else{
     return (
-        <div>
-          <div className="bg">
-            <img src={require("./imgs/bridge_background.jpeg")} className="bg_img"/>
+        <div style={{textAlign:"center"}}>
             <div className="centered titleText">
-              Austin Cleanup Project
+              Thatch
               <Form onSubmit={this.handleSubmit}>
                 <Form.Group>
                   <Form.Control style={{width:'66vw', height:'6vh'}}
@@ -78,45 +76,6 @@ class SearchPage extends Component{
               </Form>
             </div>
           </div>
-
-          <br/>
-          <Container>
-            <Row>
-              <Col xs={6}>
-                <Card>
-                <Card.Body>
-                  <Card.Text>
-                    Loren Ipsum Dolor sit amet
-                    asdf Loren Ipsum Dolor sit amet asdf asdf asdf Loren Ipsum Dolor sit amet asdf asdf asdf Loren Ipsum Dolor sit amet asdf asdf asdf
-                    asdf Loren Ipsum Dolor sit amet asdf asdf asdf Loren Ipsum Dolor sit amet asdf asdf asdf Loren Ipsum Dolor sit amet asdf asdf asdf
-                    asdf Loren Ipsum Dolor sit amet asdf asdf asdf Loren Ipsum Dolor sit amet asdf asdf asdf Loren Ipsum Dolor sit amet asdf asdf asdf
-                  </Card.Text>
-                </Card.Body>
-                </Card>
-              </Col>
-              <Col xs={6}>
-                  <img className="cardSideImage" src={require('./imgs/bridge_background.jpeg')} />
-              </Col>
-            </Row>
-            <Row>
-              <Col xs={6}>
-                  <img className="cardSideImage" src={require('./imgs/bridge_background.jpeg')} />
-              </Col>
-              <Col xs={6}>
-                <Card>
-                <Card.Body>
-                  <Card.Text>
-                    Loren Ipsum Dolor sit amet
-                    asdf Loren Ipsum Dolor sit amet asdf asdf asdf Loren Ipsum Dolor sit amet asdf asdf asdf Loren Ipsum Dolor sit amet asdf asdf asdf
-                    asdf Loren Ipsum Dolor sit amet asdf asdf asdf Loren Ipsum Dolor sit amet asdf asdf asdf Loren Ipsum Dolor sit amet asdf asdf asdf
-                    asdf Loren Ipsum Dolor sit amet asdf asdf asdf Loren Ipsum Dolor sit amet asdf asdf asdf Loren Ipsum Dolor sit amet asdf asdf asdf
-                  </Card.Text>
-                </Card.Body>
-                </Card>
-              </Col>
-            </Row>
-          </Container>
-        </div>
 
     )
   }

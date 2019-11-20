@@ -3,6 +3,7 @@ import mapboxgl from 'mapbox-gl';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
 import { renderToString } from 'react-dom/server';
+import { Card } from 'react-bootstrap';
 
 //https://blog.mapbox.com/mapbox-gl-js-react-764da6cc074a
 //---MAPBOX API---
@@ -68,6 +69,10 @@ class MapBoxMapComponent extends Component {
       if(this.props.onMove !== undefined){
         this.props.onMove(lat, lng);
     }});
+
+    //add navigation controls like zooming
+    map.addControl(new mapboxgl.NavigationControl());
+
   }
 
   render() {
@@ -89,12 +94,23 @@ class MapBoxMapComponent extends Component {
       let evnt = this.props.events[i];
       let evnt_ref = this.props.eventRefs[i];
 
-      let popup = new mapboxgl.Popup()
-        .setHTML(`<h5>${evnt.name}</h5><p>${evnt.description}</p>`);
+      //create popup and card for popup
+      var popup_card = <Card style={{width:"10rem", margin:"-5px"}}>
+        <Card.Header>{evnt.name}</Card.Header>
+        <Card.Body>
+          <Card.Text>{evnt.description}</Card.Text>
+        </Card.Body>
+      </Card>
 
+      let popup = new mapboxgl.Popup({
+          closeButton: false,
+          closeOnClick: false
+          }).setHTML(renderToString(popup_card));
+
+      //create marker
       var el = document.createElement('div');
       el.innerHTML = renderToString(<FontAwesomeIcon icon={faMapMarkerAlt}
-                                                     size="2x"
+                                                     size="3x"
                                                      color="#00B0B0"/>);
       el.id = 'marker';
 
@@ -103,18 +119,25 @@ class MapBoxMapComponent extends Component {
         .setPopup(popup)
         .addTo(this.map);
 
-      el.addEventListener('mouseenter', () => {evnt_ref.current.scrollIntoView({behavior: 'smooth', block: 'start'})});
+      //set marker event listeners
+      el.addEventListener('mouseenter', () => {
+              evnt_ref.current.scrollIntoView({behavior: 'smooth', block: 'start'});
+              popup.setLngLat([evnt.longitude, evnt.latitude]).addTo(this.map);
+      });
+      el.addEventListener('mouseleave', ()=>{
+        popup.remove();
+      })
       el.addEventListener('click', ()=>{onclick({showViewEventModal:true, displayedEvent:evnt})});
 
       this.markers.push(marker);
     }
 
     const style = {
-      position:'absolute',
+      position:'relative',
       top:0,
       bottom:0,
-      width:'100%',
-      height:'100%',
+      width:'99%',
+      height:'87vh',
       overflow: 'hidden'
     };
 

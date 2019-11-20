@@ -59,7 +59,7 @@ class EventList extends Component {
 
     return (
       <div>
-        <ListGroup style={{height:"50vh", overflow:'scroll'}}>
+        <ListGroup style={{height:"85%", width:'100%', overflow:'scroll'}}>
           {event_items}
         </ListGroup>
       </div>

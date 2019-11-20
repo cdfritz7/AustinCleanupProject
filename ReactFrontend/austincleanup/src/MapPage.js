@@ -100,15 +100,18 @@ class MapPage extends Component {
   render(){
     return(
       <div>
-        <Container className='centered'>
-          <Row>
-            <Col xs={4}>
-              <EventList events={this.state.events}
-                         eventRefs={this.state.eventRefs}
-                         onClick={(showevent, event)=>{this.setState(showevent, event)}}/>
-            </Col>
-            <Col xs={8}>
-              <MapBoxMapComponent lat={this.state.latitude} lng={this.state.longitude}
+        <Container style={{height:"100%", width:"100%", maxWidth:"100%", margin:"0px", padding:"0px"}}>
+          <Row style={{padding:"30px"}}>
+             <Col xs={3} style={{textAlign:"center", padding:"0px", paddingLeft:'15px'}}>
+                <EventList events={this.state.events}
+                          eventRefs={this.state.eventRefs}
+                          onClick={(showevent, event)=>{this.setState(showevent, event)}}/>
+                <Button variant="primary" style={{margin:"10px"}} onClick={()=>{this.setState({showAddEventModal:true})}}>
+                  Add Event
+                </Button>
+             </Col>
+             <Col xs={9} style={{padding:"0px"}}>
+               <MapBoxMapComponent lat={this.state.latitude} lng={this.state.longitude}
                                   onMove={this.resetEvents}
                                   events={this.state.events}
                                   eventRefs={this.state.eventRefs}
@@ -117,15 +120,11 @@ class MapPage extends Component {
                                   onMouseIn={(eventid)=>{this.setState(eventid)}}
                                   onMouseOut={(eventid)=>{this.setState(eventid)}}/>
             </Col>
+
           </Row>
 
-          <Row>
+          <Row className="justify-content-center">
             <Col xs={12}>
-              <Button variant="primary"
-                      onClick={()=>{this.setState({showAddEventModal:true})}}>
-                Add Event
-              </Button>
-
               {/* modal for adding events*/}
               <Modal show={this.state.showAddEventModal}
                      onHide={()=>{
