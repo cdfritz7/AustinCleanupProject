@@ -1,9 +1,15 @@
 import React, {Component} from 'react';
 import mapboxgl from 'mapbox-gl';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { renderToString } from 'react-dom/server';
 
 //https://blog.mapbox.com/mapbox-gl-js-react-764da6cc074a
 //---MAPBOX API---
 //https://docs.mapbox.com/mapbox-gl-js/api/#popup.event:open
+
+//--fontawesome react icons--
+//https://fontawesome.com/how-to-use/on-the-web/using-with/react
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiY2Rmcml0ejciLCJhIjoiY2sydzBmenM3MGF1djNrcWR3YzRmaGQ0aCJ9.y0TZwO3PN1sYjakT02t1fQ';
 
@@ -87,7 +93,9 @@ class MapBoxMapComponent extends Component {
         .setHTML(`<h5>${evnt.name}</h5><p>${evnt.description}</p>`);
 
       var el = document.createElement('div');
-      el.innerHTML = `<h3>${evnt.name}</h3>`;
+      el.innerHTML = renderToString(<FontAwesomeIcon icon={faMapMarkerAlt}
+                                                     size="2x"
+                                                     color="#00B0B0"/>);
       el.id = 'marker';
 
       let marker = new mapboxgl.Marker(el, {offset:[-25, -25]})
@@ -96,7 +104,6 @@ class MapBoxMapComponent extends Component {
         .addTo(this.map);
 
       el.addEventListener('mouseenter', () => {evnt_ref.current.scrollIntoView({behavior: 'smooth', block: 'start'})});
-      //el.addEventListener('mouseleave', ()=>{onmouseout({highlightedEvent:undefined})});
       el.addEventListener('click', ()=>{onclick({showViewEventModal:true, displayedEvent:evnt})});
 
       this.markers.push(marker);

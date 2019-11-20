@@ -12,8 +12,7 @@ ex:
 class EventItem extends Component {
 
   static defaultProps = {
-    myRef: undefined,
-    hightlight: false
+    myRef: undefined
   }
 
   constructor(props){
@@ -21,7 +20,6 @@ class EventItem extends Component {
   }
 
   render(){
-    var color = this.props.highlight ? "000000" : "FF0000";
     return (
       <div>
         <ListGroup.Item action key={this.props.my_event.id.toString()}
@@ -30,7 +28,6 @@ class EventItem extends Component {
                                  this.props.onClick({showViewEventModal:true, displayedEvent:this.props.my_event})
                                }}
                                ref={this.props.myRef}
-                               style={{color:color}}
                                >
           <h3>{this.props.my_event.name}</h3>
         </ListGroup.Item>
@@ -50,17 +47,13 @@ class EventList extends Component {
     var event_items = []
 
     for(var i=0; i<this.props.events.length; i++){
-      var highlighted = this.props.highlightedEvent && this.props.highlightedEvent.id==this.props.events[i].id;
-
       if(this.props.eventRefs.length === 0){
         event_items.push(<EventItem my_event={this.props.events[i]}
-                                    onClick={this.props.onClick}
-                                    highlight={highlighted}/>);
+                                    onClick={this.props.onClick}/>);
       }else{
         event_items.push(<EventItem my_event={this.props.events[i]}
                                     myRef={this.props.eventRefs[i]}
-                                    onClick={this.props.onClick}
-                                    highlight={highlighted}/>);
+                                    onClick={this.props.onClick}/>);
       }
     }
 

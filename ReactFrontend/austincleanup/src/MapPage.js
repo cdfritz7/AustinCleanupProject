@@ -39,7 +39,6 @@ class MapPage extends Component {
                   search_str:this.props.match.params.latlong,
                   events:[],
                   eventRefs:[],
-                  highlightedEvent:undefined,
                   isLoggedIn:localStorage.getItem("isLoggedOn"),
                   userId:localStorage.getItem("userId"),
                   showAddEventModal:false,
@@ -99,7 +98,6 @@ class MapPage extends Component {
   }
 
   render(){
-    console.log(this.state.highlightedEvent);
     return(
       <div>
         <Container className='centered'>
@@ -107,7 +105,6 @@ class MapPage extends Component {
             <Col xs={4}>
               <EventList events={this.state.events}
                          eventRefs={this.state.eventRefs}
-                         highlightedEvent={this.state.highlightedEvent}
                          onClick={(showevent, event)=>{this.setState(showevent, event)}}/>
             </Col>
             <Col xs={8}>
