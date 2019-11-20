@@ -14,7 +14,8 @@ class MapBoxMapComponent extends Component {
     lat: 34,
     zoom: 10,
     onMove: undefined,
-    events: []
+    events: [],
+    eventRefs: []
   }
 
   constructor(props){
@@ -74,14 +75,30 @@ class MapBoxMapComponent extends Component {
     this.markers = [];
 
     //add new markers
+    const onclick = this.props.onClick;
+    const onmousein = this.props.onMouseIn;
+    const onmouseout = this.props.onMouseOut;
+
     for(var i = 0; i<this.props.events.length; i++){
       let evnt = this.props.events[i];
+      let evnt_ref = this.props.eventRefs[i];
+
       let popup = new mapboxgl.Popup()
         .setHTML(`<h5>${evnt.name}</h5><p>${evnt.description}</p>`);
-      let marker = new mapboxgl.Marker()
+
+      var el = document.createElement('div');
+      el.innerHTML = `<h3>${evnt.name}</h3>`;
+      el.id = 'marker';
+
+      let marker = new mapboxgl.Marker(el, {offset:[-25, -25]})
         .setLngLat([evnt.longitude, evnt.latitude])
         .setPopup(popup)
         .addTo(this.map);
+
+      el.addEventListener('mouseenter', () => {evnt_ref.current.scrollIntoView({behavior: 'smooth', block: 'start'})});
+      //el.addEventListener('mouseleave', ()=>{onmouseout({highlightedEvent:undefined})});
+      el.addEventListener('click', ()=>{onclick({showViewEventModal:true, displayedEvent:evnt})});
+
       this.markers.push(marker);
     }
 

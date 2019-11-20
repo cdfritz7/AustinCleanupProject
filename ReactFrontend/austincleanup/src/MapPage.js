@@ -12,50 +12,6 @@ import EventList from './EventList.js';
 import MapBoxMapComponent from './MapBoxMapComponent';
 import './css/MapPage.css';
 
-class EventMarkerSmall extends Component {
-  constructor(props){
-    super(props);
-  }
-
-  render(){
-    return <h3> {this.props.name} </h3>
-  }
-}
-
-class SimpleMap extends Component {
-  static defaultProps = {
-    dcenter: {
-      lat:0.0,
-      lng:0.0
-    },
-    zoom: 10
-  };
-
-  render() {
-    //create list of markers based on passed in events
-    var marker_list = this.props.events.map(my_event =>
-    <EventMarkerSmall key={my_event.id.toString()}
-                      lat={my_event.latitude}
-                      lng={my_event.longitude}
-                      name={my_event.name} />);
-
-    return (
-      //always set container height explicitly, required by google maps
-      <div style={{height: '75vh', width: '100%'}}>
-        <GoogleMapReact
-          //we need to get a google maps api key to use full functionality
-          //bootstrapURLKeys={{key:/*your key here8
-          defaultCenter={this.props.dcenter}
-          defaultZoom={this.props.zoom}
-          center={this.props.center}
-        >
-          {marker_list}
-        </GoogleMapReact>
-      </div>
-    );
-  }
-}
-
 class MapPage extends Component {
 
   constructor(props){
@@ -82,6 +38,8 @@ class MapPage extends Component {
                   longitude:floatLng,
                   search_str:this.props.match.params.latlong,
                   events:[],
+                  eventRefs:[],
+                  highlightedEvent:undefined,
                   isLoggedIn:localStorage.getItem("isLoggedOn"),
                   userId:localStorage.getItem("userId"),
                   showAddEventModal:false,
@@ -91,6 +49,16 @@ class MapPage extends Component {
     this.componentDidMount = this.componentDidMount.bind(this);
     this.resetEvents = this.resetEvents.bind(this);
     this.removeSignUp = this.removeSignUp.bind(this);
+  }
+
+  //creates a set of React refs for each event in event_json, this is used
+  //for scrolling
+  createEventRefs(event_json){
+    var eventRefs = [];
+    for(var evnt in event_json){
+      eventRefs.push(React.createRef());
+    }
+    return eventRefs;
   }
 
   //called to reset our event list, used initially when component mounts
@@ -105,7 +73,10 @@ class MapPage extends Component {
         throw new Error('Error in MapPage.js resetEvents, Network response not okay')
       }
     }).then(json => {
-      this.setState({events:json, latitude:latitude, longitude:longitude})
+      this.setState({events:json,
+                    eventRefs:this.createEventRefs(json),
+                    latitude:latitude,
+                    longitude:longitude})
     });
   }
 
@@ -118,7 +89,7 @@ class MapPage extends Component {
         throw new Error('Error in MapPage.js componentDidMount, Network response not okay')
       }
     }).then(json => {
-      this.setState({events:json})
+      this.setState({events:json, eventRefs:this.createEventRefs(json)})
     });
   }
 
@@ -128,26 +99,26 @@ class MapPage extends Component {
   }
 
   render(){
-    /*
-
-      <SimpleMap center={{lat:this.state.latitude,
-                          lng:this.state.longitude}}
-                 events={this.state.events}/>
-
-    */
+    console.log(this.state.highlightedEvent);
     return(
       <div>
         <Container className='centered'>
           <Row>
             <Col xs={4}>
               <EventList events={this.state.events}
+                         eventRefs={this.state.eventRefs}
+                         highlightedEvent={this.state.highlightedEvent}
                          onClick={(showevent, event)=>{this.setState(showevent, event)}}/>
             </Col>
             <Col xs={8}>
               <MapBoxMapComponent lat={this.state.latitude} lng={this.state.longitude}
                                   onMove={this.resetEvents}
                                   events={this.state.events}
-                                  testprop={1}/>
+                                  eventRefs={this.state.eventRefs}
+                                  testprop={1}
+                                  onClick={(showevent, event)=>{this.setState(showevent, event)}}
+                                  onMouseIn={(eventid)=>{this.setState(eventid)}}
+                                  onMouseOut={(eventid)=>{this.setState(eventid)}}/>
             </Col>
           </Row>
 
