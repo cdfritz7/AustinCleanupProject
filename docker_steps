@@ -1,0 +1,37 @@
+1) install docker
+2) follow the instructions in sequential order
+MySQL Database -> Spring-boot -> React
+
+-------------------------
+MySQL Database
+-------------------------
+1)use docker to run MySQL in detached mode
+$sudo docker run -d --name=docker-mysql --env="MYSQL_USER=springuser2" --env="MYSQL_ROOT_PASSWORD=root" --env="MYSQL_PASSWORD=RedArmyPennePasta1!" --env="MYSQL_DATABASE=austincleanup" mysql
+
+2)shut down and remove container when done
+$sudo docker stop docker-mysql
+$sudo docker rm docker-mysql
+
+-------------------------
+Spring-boot
+-------------------------
+All steps done in /SpringBootRestAPI/
+If these do not work, make sure you have the mysql container running
+If you do, make sure to remove the docker container and just try again
+
+1)create docker image using Dockerfile
+$sudo docker build -t gs-spring-boot-docker .
+
+2)run docker image and link with mysql image
+sudo docker run -t --name gs-spring-boot-docker --link docker-mysql:mysql -p 8080:8080 --rm gs-spring-boot-docker
+
+-------------------------
+React
+-------------------------
+All steps done in /ReactFrontend
+
+1)Build image
+$sudo docker build -t react-docker . -f Dockerfile.development
+
+2)Run container
+sudo docker run -v ${PWD}:/app -v /app/node_modules --link gs-spring-boot-docker -p 3000:3000 --rm react-docker
