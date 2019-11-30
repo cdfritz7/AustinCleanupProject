@@ -1,0 +1,62 @@
+# Docker Compose file Reference (https://docs.docker.com/compose/compose-file/)
+
+version: '3'
+
+#define services
+services:
+  #App backend service
+  app-server:
+    #configuration for building docker image for backend service
+    build:
+      context: SpringBootRestAPI
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080" #forward esposed port 8080 on container to 8080 on machine
+    restart: always
+    depends_on:
+      - db #depends on mysql, start that first
+    #environment: # Pass environment variables to the service
+    #  SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/polls?useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false
+    #  SPRING_DATASOURCE_USERNAME: callicoder
+    #  SPRING_DATASOURCE_PASSWORD: callicoder
+    networks: #networks to join (services on the same network can communicate)
+      - backend
+      - frontend
+
+  #frontend service
+  app-client:
+    build:
+      context: ReactFrontend #use image from specfied directory
+      dockerfile: Dockerfile.production
+      #args:
+      # REACT_APP_API_BASE_URL: http://127.0.0.01:8080/api
+    ports:
+      - "3000:80" #map exposed port 80 on container to port 9090 on host machine
+    restart: always
+    depends_on:
+      - app-server
+    networks:
+      - frontend
+      - backend
+
+   #database services (mySQL)
+   db:
+     image: mysql:5.7
+     ports:
+       - "3306:3306"
+     restart: always
+     environment:
+       MYSQL_DATABASE: austincleanup
+       MYSQL_USER: springuser2
+       MYSQL_PASSWORD: RedArmyPennePasta1!
+       MYSQL_ROOT_PASSWORD: root
+     volumes:
+       - db-data:/var/lib/mysql
+     networks:
+       - backend
+
+#volumes
+volumes:
+  db-data:
+
+#networks to be created to facilitate communication between containers

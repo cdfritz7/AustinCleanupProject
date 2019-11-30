@@ -1,6 +1,11 @@
 1) install docker
-2) follow the instructions in sequential order
+
+2a) follow the instructions in sequential order
 MySQL Database -> Spring-boot -> React
+
+2b) alternatively, run "$sudo docker-compose -f docker-compose-dev.yml up"
+in the project root directory, this approach might not enable hot reloading,
+while the other approach in 2a should allow hot reloading.
 
 -------------------------
 MySQL Database
