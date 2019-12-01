@@ -40,3 +40,23 @@ $sudo docker build -t react-docker . -f Dockerfile.development
 
 2)Run container
 sudo docker run -v ${PWD}:/app -v /app/node_modules --link gs-spring-boot-docker -p 3000:3000 --rm react-docker
+
+
+
+----------------------
+Production
+----------------------
+https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_ecs.html
+1) Need to prebuild docker images and upload them to an online repository (Docker Hub)
+2) Specify these online images in a dockerrun.aws.json file
+3) When you create an environment in the elastic beanstalk management console, attach permissions to the default instance profile
+
+(probably use this) deploying docker containers with ECS using tasks
+https://aws.amazon.com/getting-started/tutorials/deploy-docker-containers/
+https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html
+1) Build containers
+2) Push them to amazon ECR
+3) Run all containers in a single task in amazon ECR
+
+https://medium.com/@umairnadeem/deploy-to-aws-using-docker-compose-simple-210d71f43e67
+2)Simple solution???
