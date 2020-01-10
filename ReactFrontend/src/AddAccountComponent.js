@@ -6,6 +6,7 @@ import {Form,
         Card,
         Button,
         Alert} from 'react-bootstrap';
+import APIRequest from './APIRequests.js';
 
 class AddAccountComponent extends Component{
 
@@ -36,7 +37,7 @@ class AddAccountComponent extends Component{
     event.preventDefault();
 
     //post to database
-    fetch('http://localhost:8080/austinCleanupAPI/addUser', {
+    fetch(APIRequest.getAPIBase()+'austinCleanupAPI/addUser', {
       method: 'POST',
       headers: {'Accept': 'application/json', 'Content-Type':'application/json'},
       body: JSON.stringify({

@@ -60,7 +60,13 @@ public class MainController {
 		else return false;
 	}
 
-  @CrossOrigin(origins = "http://localhost:3000")
+	//URL that allows all requests, for testing
+  @CrossOrigin(origins = "*")
+	@GetMapping(path="/test")
+	public @ResponseBody String getTest () {
+		return "Test Response";
+	}
+
 	@PostMapping(path="/addUser") // Map ONLY POST Requests
 	public @ResponseBody String addNewUser (@RequestBody String jsonStr) {
 
@@ -119,7 +125,7 @@ public class MainController {
 		return "User Deleted";
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000") //so we can make requests from react when in development revisit
+	 //so we can make requests from react when in development revisit
 	@GetMapping(path="/allUsers")
 	public @ResponseBody Iterable<User> getAllUsers() {
 		// This returns a JSON or XML with the users
@@ -132,7 +138,6 @@ public class MainController {
 		return userRepository.findById(Integer.parseInt(id));
 	}
 
-	@CrossOrigin(origins="http://localhost:3000")
 	@PostMapping(path="/checkIsUser")
 	public @ResponseBody String checkIsUser(@RequestBody String jsonStr) {
 
@@ -171,7 +176,7 @@ public class MainController {
 	@Autowired //get the bean called eventRepository, we will use it to handle event data
 	private EventRepository eventRepository;
 
-	@CrossOrigin(origins = "http://localhost:3000")
+
 	@PostMapping("/addEvent")
 	public @ResponseBody String addEvent(@RequestBody String jsonStr){
 
@@ -197,20 +202,20 @@ public class MainController {
 		return "Event Deleted";
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000") //so we can make requests from react when in development revisit
+	 //so we can make requests from react when in development revisit
 	@GetMapping("/allEvents")
 	public @ResponseBody Iterable<Event> getAllEvents(){
 		return eventRepository.findAll();
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000") //so we can make requests from react when in development revisit
+	 //so we can make requests from react when in development revisit
 	@GetMapping("/eventById")
 	public @ResponseBody Optional<Event> getEventById(@RequestParam String id){
 		return eventRepository.findById(Integer.parseInt(id));
 	}
 
 	//not done, get list of events in a 10 mile radius of a latitude and longitude
-	@CrossOrigin(origins = "http://localhost:3000") //so we can make requests from react when in development revisit
+	 //so we can make requests from react when in development revisit
 	@GetMapping("/eventsByLatLong")
 	public @ResponseBody Iterable<Event> getEventsByLatLng(@RequestParam String lat, @RequestParam String lng){
 		Iterable<Event> allEvents = eventRepository.findAll();
@@ -246,7 +251,7 @@ public class MainController {
 	@Autowired
 	private UserEventMapRepository userEventRepository;
 
-	@CrossOrigin(origins = "http://localhost:3000")
+
 	@PostMapping("/addUserEvent")
 	public @ResponseBody String addUserEventInteraction(@RequestBody String jsonStr){
 
@@ -267,7 +272,7 @@ public class MainController {
 		return "User/Event Mapping Deleted";
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000")
+
 	@PostMapping("/deleteUserEvent")
 	public @ResponseBody Boolean deleteUserEvent(@RequestBody String jsonStr){
 
@@ -307,7 +312,7 @@ public class MainController {
 	returns JSON string specifying if a user is signed up for an event
 	and if the user is an organizer for the event
 	*/
-	@CrossOrigin(origins = "http://localhost:3000")
+
 	@GetMapping("/isUserSignedUpForEvent")
 	public @ResponseBody String isUserSignedUpForEvent(@RequestParam String userId, @RequestParam String eventId){
 		Iterable<UserEvent> all_user_events = userEventRepository.findAll();
@@ -331,7 +336,7 @@ public class MainController {
 		return retString.toString();
 	}
 
-	@CrossOrigin(origins = "http://localhost:3000") //so we can make requests from react when in development revisit
+	 //so we can make requests from react when in development revisit
 	@GetMapping("/eventsByUserId")
 	public @ResponseBody Iterable<Event> getEventsByUserId(@RequestParam String id){
 		Iterable<UserEvent> all_user_events = userEventRepository.findAll();
@@ -351,7 +356,6 @@ public class MainController {
 
 	//splits the events the user is associated with by those the user is an organizer
 	//of and those they are not an organizer of
-	@CrossOrigin(origins = "http://localhost:3000")
 	@GetMapping("/detailedEventsByUserId")
 	public @ResponseBody String getDetailedEventsByUserId(@RequestParam String id){
 		Iterable<UserEvent> all_user_events = userEventRepository.findAll();
@@ -387,7 +391,6 @@ public class MainController {
 
 	//deletes an event from the event repository, and deletes all userEvents
 	//that contain that event
-	@CrossOrigin(origins = "http://localhost:3000")
 	@PostMapping("/absoluteDeleteEventById")
 	public @ResponseBody String absoluteDeleteEvent(@RequestBody String jsonStr){
 

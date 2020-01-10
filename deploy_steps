@@ -1,0 +1,20 @@
+https://blog.arnoldgalovics.com/deploying-a-simple-spring-boot-with-mysql-app-to-aws-using-elastic-beanstalk/
+1. Deploy backend and database without docker - create JAR
+  - in /src/main/java/hello/Application.java, switch over the CORS from the development comment to the production comment
+  - in /SpringBootRestAPI/ execute $mvn clean package
+  - new .jar will be at /SpringBootRestAPI/target/
+  - deploy to amazon elastic beanstalk using a mysql server, get the mysql login info from application.properties
+  - https://us-east-2.console.aws.amazon.com/elasticbeanstalk/home?region=us-east-2#/environment/dashboard?applicationName=sojoin-api&environmentId=e-mmkexshvpf
+
+https://www.newline.co/fullstack-react/articles/deploying-a-react-app-to-s3/
+2. Deploy frontend separately - using an s3 bucket - very cheap and used to serve static content
+  - in /ReactFrontend/src/APIRequest.js, change comment from development to production
+  - in /ReactFrontend/ run $npm run build
+  - upload the contents of the build folder to s3 instance
+  - there is a way to automatically do this with aws CLI and package.json / npm run deploy
+  - react domain: http://sojoin-react.s3-website.us-east-2.amazonaws.com/
+
+- https://spring.io/guides/gs/rest-service-cors/ can have global setting for CORS to accept it from whatever page the frontend is at
+
+3. https://medium.com/ovrsea/a-domain-name-for-your-react-app-c05821fd3518
+find a domain name, should resolve connection insecurity

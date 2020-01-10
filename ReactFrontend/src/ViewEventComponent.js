@@ -5,6 +5,7 @@ import {Container,
         Card,
         Button} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
+import APIRequest from './APIRequests.js';
 class ViewEventComponent extends Component{
 
   constructor(props){
@@ -23,7 +24,7 @@ class ViewEventComponent extends Component{
 
   /*sends post request to sign user up for event*/
   handleSubmit(){
-    fetch('http://localhost:8080/austinCleanupAPI/addUserEvent', {
+    fetch(APIRequest.getAPIBase()+'austinCleanupAPI/addUserEvent', {
         method: 'POST',
         headers: {'Accept': 'application/json', 'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -41,7 +42,7 @@ class ViewEventComponent extends Component{
   componentDidMount(){
     //finds if the user is registered for the event
     if(this.props.isLoggedIn){
-      fetch(`http://localhost:8080/austinCleanupAPI/isUserSignedUpForEvent?userId=${this.props.userId}&eventId=${this.props.event.id}`)
+      fetch(APIRequest.getAPIBase()+`austinCleanupAPI/isUserSignedUpForEvent?userId=${this.props.userId}&eventId=${this.props.event.id}`)
       .then(function(response){
         if(response.ok){
           return response.json();
@@ -57,7 +58,7 @@ class ViewEventComponent extends Component{
 
   handleRemoval(){
     if(this.props.isLoggedIn){
-      fetch('http://localhost:8080/austinCleanupAPI/deleteUserEvent', {
+      fetch(APIRequest.getAPIBase()+'austinCleanupAPI/deleteUserEvent', {
         method:"POST",
         headers: {'Accept': 'application/json', 'Content-Type':'application/json'},
         body: JSON.stringify({
@@ -80,7 +81,7 @@ class ViewEventComponent extends Component{
 
   handleDelete(){
     console.log(this.props.event.id.toString());
-    fetch('http://localhost:8080/austinCleanupAPI/absoluteDeleteEventById', {
+    fetch(APIRequest.getAPIBase()+'austinCleanupAPI/absoluteDeleteEventById', {
       method:'POST',
       headers: {'Accept': 'application/json', 'Content-Type':'application/json'},
       body: JSON.stringify({

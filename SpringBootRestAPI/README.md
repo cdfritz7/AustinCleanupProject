@@ -1,3 +1,4 @@
+run mysql, then
 run mvn spring-boot:run to start the server
 
 you must have your mysql setup to mesh with the
@@ -25,10 +26,11 @@ You can find the location of your my.cnf file by using the following command
 $locate my.cnf
 
 -----
-if you get an error when you try to add a new user that says 
+if you get an error when you try to add a new user that says
 "Error in Add Account Component, response not ok"
 and the database gives "table austincleanup.hibernate_sequence does not exist",
-this is because of backwards compatability issues with spring/mysql. edit 
-`SpringBootRestAPI/src/main/resources/application.properties`, from 
+this is because of backwards compatability issues with spring/mysql. edit
+`SpringBootRestAPI/src/main/resources/application.properties`, from
 `spring.jpa.hibernate.ddl-auto=update` to `spring.jpa.hibernate.ddl-auto=create` and
-try adding a user again. if that works, remember to change it back to `update`. 
+try adding a user again. if that works, remember to change it back to `update`.
+----

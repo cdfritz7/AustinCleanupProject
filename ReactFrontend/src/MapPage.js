@@ -11,6 +11,7 @@ import AddEventComponent from './AddEventComponent.js';
 import EventList from './EventList.js';
 import MapBoxMapComponent from './MapBoxMapComponent';
 import './css/MapPage.css';
+import APIRequest from './APIRequests.js';
 
 class MapPage extends Component {
 
@@ -64,7 +65,7 @@ class MapPage extends Component {
   //or when a search is performed
   //will be done by making an API call, right now just returns all events
   resetEvents(latitude, longitude){
-    fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${latitude}&lng=${longitude}`)
+    fetch(APIRequest.getAPIBase()+`/austinCleanupAPI/eventsByLatLong?lat=${latitude}&lng=${longitude}`)
     .then(function(response){
       if(response.ok){
         return response.json();
@@ -80,7 +81,7 @@ class MapPage extends Component {
   }
 
   componentDidMount(){
-    fetch(`http://localhost:8080/austinCleanupAPI/eventsByLatLong?lat=${this.state.latitude.toString()}&lng=${this.state.longitude.toString()}`)
+    fetch(APIRequest.getAPIBase()+`austinCleanupAPI/eventsByLatLong?lat=${this.state.latitude.toString()}&lng=${this.state.longitude.toString()}`)
     .then(function(response){
       if(response.ok){
         return response.json();

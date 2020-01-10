@@ -1,8 +1,8 @@
-/home/fritz/Projects/austincleanup/SprintBootRestAPI/src/main/java/hello/User.java
-/home/fritz/Projects/austincleanup/SprintBootRestAPI/src/main/java/hello/UserEventMapRepository.java
-/home/fritz/Projects/austincleanup/SprintBootRestAPI/src/main/java/hello/UserEvent.java
-/home/fritz/Projects/austincleanup/SprintBootRestAPI/src/main/java/hello/Application.java
-/home/fritz/Projects/austincleanup/SprintBootRestAPI/src/main/java/hello/EventRepository.java
-/home/fritz/Projects/austincleanup/SprintBootRestAPI/src/main/java/hello/UserRepository.java
-/home/fritz/Projects/austincleanup/SprintBootRestAPI/src/main/java/hello/MainController.java
-/home/fritz/Projects/austincleanup/SprintBootRestAPI/src/main/java/hello/Event.java
+/home/fritz/Projects/austincleanup/SpringBootRestAPI/src/main/java/hello/Event.java
+/home/fritz/Projects/austincleanup/SpringBootRestAPI/src/main/java/hello/UserRepository.java
+/home/fritz/Projects/austincleanup/SpringBootRestAPI/src/main/java/hello/UserEvent.java
+/home/fritz/Projects/austincleanup/SpringBootRestAPI/src/main/java/hello/User.java
+/home/fritz/Projects/austincleanup/SpringBootRestAPI/src/main/java/hello/EventRepository.java
+/home/fritz/Projects/austincleanup/SpringBootRestAPI/src/main/java/hello/UserEventMapRepository.java
+/home/fritz/Projects/austincleanup/SpringBootRestAPI/src/main/java/hello/Application.java
+/home/fritz/Projects/austincleanup/SpringBootRestAPI/src/main/java/hello/MainController.java

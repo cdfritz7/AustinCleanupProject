@@ -1,4 +1,9 @@
+hello/UserEventMapRepository.class
+hello/EventRepository.class
 hello/User.class
+hello/Event.class
+hello/UserEvent.class
 hello/MainController.class
+hello/Application$1.class
 hello/Application.class
 hello/UserRepository.class

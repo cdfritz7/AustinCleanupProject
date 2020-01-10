@@ -6,6 +6,7 @@ import {Form,
         Card,
         Button} from 'react-bootstrap';
 import {Link} from 'react-router-dom';
+import APIRequest from './APIRequests.js';
 
 class AddEventComponent extends Component {
 
@@ -34,7 +35,7 @@ class AddEventComponent extends Component {
 
     //post event to database
     const that = this;
-    fetch('http://localhost:8080/austinCleanupAPI/addEvent', {
+    fetch(APIRequest.getAPIBase()+'austinCleanupAPI/addEvent', {
       method: 'POST',
       headers: {'Accept': 'application/json', 'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -52,7 +53,7 @@ class AddEventComponent extends Component {
       }
     }).then(json => {
       //post userevent interaction to database
-      fetch('http://localhost:8080/austinCleanupAPI/addUserEvent', {
+      fetch(APIRequest.getAPIBase()+'austinCleanupAPI/addUserEvent', {
         method: 'POST',
         headers: {'Accept': 'application/json', 'Content-Type':'application/json'},
         body: JSON.stringify({

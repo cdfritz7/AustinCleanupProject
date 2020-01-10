@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import LoginComponent from './LoginComponent.js';
+import APIRequest from './APIRequests.js';
 import {
         Container,
         Row,
@@ -7,7 +8,6 @@ import {
         Button,
         Modal
        } from 'react-bootstrap';
-
 import ViewEventComponent from './ViewEventComponent.js';
 import EventList from './EventList.js';
 
@@ -109,7 +109,7 @@ class ProfilePage extends Component {
   async handleLogonSubmit(event){
     event.preventDefault();
 
-    const response = await fetch('http://localhost:8080/austinCleanupAPI/checkIsUser', {
+    const response = await fetch(APIRequest.getAPIBase()+'austinCleanupAPI/checkIsUser', {
       method:"POST",
       headers: {'Accept': 'application/json', 'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -134,7 +134,7 @@ class ProfilePage extends Component {
       userId = localStorage.getItem("userId");
     }
 
-    fetch(`http://localhost:8080/austinCleanupAPI/detailedEventsByUserId?id=${userId}`)
+    fetch(APIRequest.getAPIBase()+`austinCleanupAPI/detailedEventsByUserId?id=${userId}`)
     .then(function(response){
       if(response.ok){
         return response.json();
