@@ -65,7 +65,7 @@ class MapPage extends Component {
   //or when a search is performed
   //will be done by making an API call, right now just returns all events
   resetEvents(latitude, longitude){
-    fetch(APIRequest.getAPIBase()+`/austinCleanupAPI/eventsByLatLong?lat=${latitude}&lng=${longitude}`)
+    fetch(APIRequest.getAPIBase()+`austinCleanupAPI/eventsByLatLong?lat=${latitude}&lng=${longitude}`)
     .then(function(response){
       if(response.ok){
         return response.json();
