@@ -1,9 +1,17 @@
-FROM node:7.8.0
+#https://mherman.org/blog/dockerizing-a-react-app/#react-router-and-nginx
+#base image
+FROM node:12.2.0-alpine
 
-WORKDIR /
-ADD . /
+#set working directory
+WORKDIR /app
 
-EXPOSE 3000
+# add app/node_modules/.bin to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
 
+#install and cache app dependencies
+COPY package.json /app/package.json
 RUN npm install
-ENTRYPOINT npm run start
+RUN npm install react-scripts@3.0.1 -g
+
+#start app
+CMD ["npm", "start"]

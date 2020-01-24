@@ -1,4 +1,7 @@
 https://trello.com/b/RjaEIPI2/volunteerism
 
 =========
-- When Deploying - Revisit the @CrossOrigin(origins = "http://localhost:3000") in the spring boot MainController.java
+- add new origin to backend
+- add ecryption to user passwords on server side
+
+

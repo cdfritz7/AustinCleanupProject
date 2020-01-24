@@ -23,7 +23,7 @@ public class Application {
           //dev
           //registry.addMapping("/austinCleanupAPI/*").allowedOrigins("http://localhost:3000");
           //production
-          registry.addMapping("/austinCleanupAPI/*").allowedOrigins("http://sojoin-react.s3-website.us-east-2.amazonaws.com");
+          registry.addMapping("/austinCleanupAPI/*").allowedOrigins("https://www.sojoin.us");
         }
       };
     }
