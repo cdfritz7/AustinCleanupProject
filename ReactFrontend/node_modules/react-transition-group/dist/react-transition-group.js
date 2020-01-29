@@ -46,10 +46,6 @@
     subClass.__proto__ = superClass;
   }
 
-  function unwrapExports (x) {
-  	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-  }
-
   function createCommonjsModule(fn, module) {
   	return module = { exports: {} }, fn(module, module.exports), module.exports;
   }
@@ -811,57 +807,28 @@
   var propTypes_4 = propTypes.bool;
   var propTypes_5 = propTypes.func;
 
-  var interopRequireDefault = createCommonjsModule(function (module) {
-  function _interopRequireDefault(obj) {
-    return obj && obj.__esModule ? obj : {
-      default: obj
-    };
-  }
-
-  module.exports = _interopRequireDefault;
-  });
-
-  unwrapExports(interopRequireDefault);
-
-  var hasClass_1 = createCommonjsModule(function (module, exports) {
-
-  exports.__esModule = true;
-  exports.default = hasClass;
-
   function hasClass(element, className) {
-    if (element.classList) return !!className && element.classList.contains(className);else return (" " + (element.className.baseVal || element.className) + " ").indexOf(" " + className + " ") !== -1;
+    if (element.classList) return !!className && element.classList.contains(className);
+    return (" " + (element.className.baseVal || element.className) + " ").indexOf(" " + className + " ") !== -1;
   }
-
-  module.exports = exports["default"];
-  });
-
-  unwrapExports(hasClass_1);
-
-  var addClass_1 = createCommonjsModule(function (module, exports) {
-
-
-
-  exports.__esModule = true;
-  exports.default = addClass;
-
-  var _hasClass = interopRequireDefault(hasClass_1);
 
   function addClass(element, className) {
-    if (element.classList) element.classList.add(className);else if (!(0, _hasClass.default)(element, className)) if (typeof element.className === 'string') element.className = element.className + ' ' + className;else element.setAttribute('class', (element.className && element.className.baseVal || '') + ' ' + className);
+    if (element.classList) element.classList.add(className);else if (!hasClass(element, className)) if (typeof element.className === 'string') element.className = element.className + " " + className;else element.setAttribute('class', (element.className && element.className.baseVal || '') + " " + className);
   }
-
-  module.exports = exports["default"];
-  });
-
-  var addOneClass = unwrapExports(addClass_1);
 
   function replaceClassName(origClass, classToRemove) {
-    return origClass.replace(new RegExp('(^|\\s)' + classToRemove + '(?:\\s|$)', 'g'), '$1').replace(/\s+/g, ' ').replace(/^\s*|\s*$/g, '');
+    return origClass.replace(new RegExp("(^|\\s)" + classToRemove + "(?:\\s|$)", 'g'), '$1').replace(/\s+/g, ' ').replace(/^\s*|\s*$/g, '');
   }
 
-  var removeClass = function removeClass(element, className) {
-    if (element.classList) element.classList.remove(className);else if (typeof element.className === 'string') element.className = replaceClassName(element.className, className);else element.setAttribute('class', replaceClassName(element.className && element.className.baseVal || '', className));
-  };
+  function removeClass(element, className) {
+    if (element.classList) {
+      element.classList.remove(className);
+    } else if (typeof element.className === 'string') {
+      element.className = replaceClassName(element.className, className);
+    } else {
+      element.setAttribute('class', replaceClassName(element.className && element.className.baseVal || '', className));
+    }
+  }
 
   var config = {
     disabled: false
@@ -1464,9 +1431,9 @@
   Transition.ENTERED = 3;
   Transition.EXITING = 4;
 
-  var _addClass = function addClass(node, classes) {
+  var _addClass = function addClass$1(node, classes) {
     return node && classes && classes.split(' ').forEach(function (c) {
-      return addOneClass(node, c);
+      return addClass(node, c);
     });
   };
 

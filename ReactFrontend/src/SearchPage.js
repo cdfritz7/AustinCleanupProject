@@ -64,7 +64,7 @@ class SearchPage extends Component{
     return (
         <div style={{textAlign:"center"}}>
             <div className="centered titleText">
-              SOJOIN
+              SOJOIN4
               <Form onSubmit={this.handleSubmit}>
                 <Form.Group>
                   <Form.Control style={{width:'66vw', height:'6vh'}}

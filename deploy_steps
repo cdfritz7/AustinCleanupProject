@@ -18,3 +18,15 @@ https://medium.com/faun/how-to-host-your-static-website-with-s3-cloudfront-and-s
 
 3. https://medium.com/ovrsea/a-domain-name-for-your-react-app-c05821fd3518
 find a domain name, should resolve connection insecurity
+
+AWS certificate manager
+https://console.aws.amazon.com/acm/home?ad=c&cp=bn&p=cmr&region=us-east-1#/wizard/
+
+Route53 DNS
+https://console.aws.amazon.com/route53/home?ad=c&cp=bn&p=r53#resource-record-sets:Z11NBP3SP5IXQ5
+
+S3 console
+https://s3.console.aws.amazon.com/s3/buckets/sojoin.us/?region=us-east-1&tab=properties
+
+cloudfront
+https://console.aws.amazon.com/cloudfront/home#distributions:

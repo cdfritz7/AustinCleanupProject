@@ -1,7 +1,10 @@
 https://trello.com/b/RjaEIPI2/volunteerism
 
 =========
-- add new origin to backend
+- add new origin to backend - done?
+- need to enable https for backend
+  -https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-elb.html
+  -don't want to use elastic load balancer here, may need to create ssl cert by myself
+- frontend does not seem to be changing even when we change the content in the s3 bucket
+
 - add ecryption to user passwords on server side
-
-
